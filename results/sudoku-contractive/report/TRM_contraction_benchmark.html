@@ -124,11 +124,11 @@ window.report = (() => {
   <header class="tb-head" id="top">
     <h1 class="tb-title">TRM contraction benchmark</h1>
     <p class="tb-lede">
-      Sudoku-Extreme, 35k training steps per arm. Capping the Lipschitz constant of the recursive cycle map costs accuracy at every strength tested:
+      Sudoku-Extreme, 35k training steps per arm. Capping the Lipschitz constant of the recursive cycle map costs accuracy at every strength tested (three seeds at cap 0.95, one seed at caps 1, 2 and 4):
       at cap 0.95 the exact accuracy falls to <b data-source="arms" data-field="exact_full" data-where="arm=A1" class="tb-skeleton">—</b> against
       <b data-source="arms" data-field="exact_full" data-where="arm=A0@T" class="tb-skeleton">—</b> for vanilla TRM.
-      With the V2 monotone field on Euler-TRM, 16 fully random starts agree on the answer for most puzzles:
-      <b data-source="arms" data-field="rand_unanimous" data-where="arm=A3" class="tb-skeleton">—</b> for seed 0 (56.7 ± 6.9% over three seeds),
+      With the V2 monotone field on Euler-TRM, 16 fully random starts agree on the answer for more than half of puzzles on average:
+      <b data-source="arms" data-field="rand_unanimous" data-where="arm=A3" class="tb-skeleton">—</b> for seed 0 (56.7 ± 6.9% over three seeds, 48.8–61.4% per seed),
       against at most 2.2% for every other arm on seed 0.
     </p>
   </header>
@@ -158,7 +158,7 @@ window.report = (() => {
 
   <section class="tb-section" id="cap-sweep">
     <h2 class="tb-h2">Every Lipschitz cap that binds costs accuracy</h2>
-    <p class="tb-finding">Vanilla TRM's own cycle map stretches adversarial perturbations about six-fold. Capping that stretch costs accuracy: it falls from 55.7% at cap 4 to 27.9% at cap 2 and stays near 10% for caps of 1 and 0.95. The decoder-aware variants, which only constrain what the answer decoder can see, keep far more accuracy than a full-state cap of similar strictness.</p>
+    <p class="tb-finding">Vanilla TRM's own cycle map stretches adversarial perturbations about six-fold. Capping that stretch costs accuracy: it falls from 55.7% at cap 4 to 27.9% at cap 2 and stays near 10% for caps of 1 and 0.95. The decoder-aware variants, which only constrain what the answer decoder can see, keep far more accuracy than the full-state V1 cap at the same ρ (D2 at ρ = 1 is implied by V1 at ρ = 1, so it is a weaker constraint; Dγ drops any bound on the decoder-invisible part of Φ(s) but tightens the leak bound to ‖P·J·(I−P)‖ ≤ ργ ≈ 0.29, against ρ under V1).</p>
     <div class="tb-grid">
       <div class="tb-card" style="grid-column: 1 / -1">
         <h3 class="tb-card-title">Exact accuracy vs Lipschitz cap on the cycle map Φ</h3>
@@ -170,7 +170,7 @@ window.report = (() => {
 
   <section class="tb-section" id="uniqueness">
     <h2 class="tb-h2">With the V2 monotone field, random starts agree on most puzzles</h2>
-    <p class="tb-finding">Each puzzle is run from 16 fully random starting states for 64 steps. With V2, all 16 starts end on the same answer for 61.4% of puzzles (seed 0), and picking the trajectory with the smallest fixed-point residual scores 86.3% against 72.4% for the usual single run, at 16 times the inference compute. Every other arm, vanilla included, mostly lands on different answers from different random starts. From starts close to the usual one (Gaussian noise of std 0.5) the gap is much smaller: 60.7% for V2, 57.3% for Euler-TRM and 47.9% for Euler + Dγ (seed 0).</p>
+    <p class="tb-finding">Each puzzle is run from 16 fully random starting states for 64 steps. With V2, all 16 starts end on the same answer for 61.4% of puzzles (seed 0), and picking the trajectory with the smallest fixed-point residual scores 86.3% against 72.4% for the usual single run, at 16 times the inference compute. Other 16-trajectory selectors come close: vanilla TRM at 45k steps with a majority vote over 16 random starts reaches 82.4 ± 3.9% over three seeds (79.3% on seed 0), comparable to V2's lowest-residual pick (81.0 ± 5.7%), and Euler-TRM with a vote over 16 noisy starts reaches 79.2 ± 2.3%. Every other arm, vanilla included, mostly lands on different answers from different random starts. From starts close to the usual one (Gaussian noise of std 0.5) the gap to the Euler-TRM arms is much smaller: 60.7% for V2, 57.3% for Euler-TRM and 47.9% for Euler + Dγ, against 6.1% for vanilla TRM (20.4% at 45k steps; seed 0; three-seed means 23.4 ± 25.1% and 23.2 ± 13.7%; on seed 2, vanilla at 35k steps is level with V2, 52.2% vs 50.3%).</p>
     <div class="tb-grid">
       <div class="tb-card">
         <h3 class="tb-card-title">Puzzles where all 16 random starts agree</h3>
@@ -187,7 +187,7 @@ window.report = (() => {
 
   <section class="tb-section" id="seeds">
     <h2 class="tb-h2">Across three seeds: Euler-TRM gains a little (not significant), V1 hurts a lot</h2>
-    <p class="tb-finding">Paired differences on the same seed (same initialisation and data order), 100k test puzzles, 16 steps. The V1 cap costs between 52.6 and 54.2 points. Damped Euler updates gain between 1.1 and 5.5 points (mean 3.0 ± 2.3; not significant at n = 3). Adding the V2 penalty costs between 1.5 and 10.2 points.</p>
+    <p class="tb-finding">Paired differences on the same seed (same seed, data order and random-number stream), 100k test puzzles, 16 steps. The initialisation is bitwise identical only between runs initialised on the same GPU model, because PyTorch's CUDA random numbers depend on the device; seed 0 ran on two GPU models (vanilla and V1 cap 0.95 finished on the RTX 4090 Laptop GPU, the Euler-TRM arms ran on RTX 5080s), so seed-0 differences across GPU models may include an initialisation difference. Seeds 1 and 2 ran on RTX 5080s only. The V1 cap costs between 52.6 and 54.2 points. Euler-TRM (h = 0.5 plus a learned time embedding) gains between 1.0 and 5.5 points (mean 3.0 ± 2.3; not significant at n = 3). Adding the V2 penalty costs between 1.5 and 10.2 points. Euler-TRM with V2 is below vanilla TRM at equal steps on average (61.9 vs 63.8; per seed +0.8, −1.8, −4.6; not significant): seed 0, shown in the rest of this page, is its best seed.</p>
     <div class="tb-grid">
       <div class="tb-card" style="grid-column: 1 / -1">
         <h3 class="tb-card-title">Change in exact accuracy, per seed (points)</h3>
@@ -199,7 +199,7 @@ window.report = (() => {
 
   <section class="tb-section" id="steps">
     <h2 class="tb-h2">More inference steps keep helping, and the residual says when to stop</h2>
-    <p class="tb-finding">All arms were trained with up to 16 steps (learned halting); the standard evaluation runs exactly 16. Running longer keeps adding accuracy for the arms that learned well. For the arms shown, stopping each puzzle once its fixed-point residual falls below a threshold reaches the 64-step accuracy at a fraction of the steps; under the V1 cap of 0.95 the residual becomes small before the answer is right, so this rule fails there.</p>
+    <p class="tb-finding">All arms were trained with up to 16 steps (learned halting); the standard evaluation runs exactly 16. Running longer keeps adding accuracy for the arms that learned well. For the arms shown, stopping each puzzle once its fixed-point residual falls below a threshold reaches the 64-step accuracy at a fraction of the steps; under the V1 cap of 0.95 on TRM the residual becomes small before the answer is right, so this rule fails there.</p>
     <div class="tb-grid">
       <div class="tb-card">
         <h3 class="tb-card-title">Exact accuracy vs inference steps</h3>
@@ -216,7 +216,7 @@ window.report = (() => {
 
   <section class="tb-section" id="training">
     <h2 class="tb-h2">Learning curves</h2>
-    <p class="tb-finding">Test accuracy during training (10k held-out puzzles, EMA weights, every 5,000 steps). The constrained arms separate from vanilla early, as soon as vanilla's accuracy takes off.</p>
+    <p class="tb-finding">Test accuracy during training (10k held-out puzzles, EMA weights, every 5,000 steps). The V1- and decoder-constrained arms separate from vanilla early, as soon as vanilla's accuracy takes off; Euler-TRM with V2 tracks vanilla on seed 0 (shown); on seed 2 it is 4–11 points behind from 15k steps.</p>
     <div class="tb-grid">
       <div class="tb-card" style="grid-column: 1 / -1">
         <h3 class="tb-card-title">Exact accuracy during training</h3>
@@ -228,7 +228,7 @@ window.report = (() => {
 
   <section class="tb-section" id="all-arms">
     <h2 class="tb-h2">Every arm, seed 0</h2>
-    <p class="tb-finding">σ<sub>max</sub>(J<sub>Φ</sub>) is the largest stretch of one recursion cycle at the step-16 state; ρ(J<sub>Ψ</sub>) the spectral radius of one full inference step. ρ below 1 means the iteration converges locally even when σ is far above 1.</p>
+    <p class="tb-finding">σ<sub>max</sub>(J<sub>Φ</sub>) is the largest stretch of one recursion cycle, at the state entering the last cycle of the step after step 16; ρ(J<sub>Ψ</sub>) the spectral radius of one full inference step at the step-16 state. Both are power-iteration estimates (20 iterations for σ<sub>max</sub>, which is estimated from below; 30 for ρ). At a fixed point, ρ below 1 means the iteration converges locally even when σ is far above 1; the step-16 state is not exactly a fixed point (relative residual about 0.11 for vanilla TRM).</p>
     <div class="tb-card">
       <div class="tb-table-wrap">
         <table class="tb-table" id="arms-table" data-source="arms" data-row-key="arm">
@@ -258,8 +258,8 @@ window.report = (() => {
         <dt>D2 and Dγ (decoder-aware)</dt><dd>Constrain only the part of the state the answer decoder reads. D2: the decoded part of Φ(s) is 1-Lipschitz in the full state. Dγ: semi-contraction onto the set of states with the same decoded answer, leak tolerance γ = 0.3.</dd>
       </dl>
       <dl>
-        <dt>Euler-TRM</dt><dd>Each update becomes z ← z + h·(F(z) − z) with h = 0.5 and a time embedding; h = 1 is vanilla TRM.</dd>
-        <dt>V2 monotone field</dt><dd>On Euler-TRM, penalty on ReLU(⟨V(s)−V(s′), s−s′⟩/‖s−s′‖² + μ) for the joint vector field V, μ ≈ 0.1: trajectories of the continuous flow converge toward each other.</dd>
+        <dt>Euler-TRM</dt><dd>Each update becomes z ← z + h·(F(z) − z) with h = 0.5 and a learned time embedding; h = 1 without the time embedding is vanilla TRM.</dd>
+        <dt>V2 monotone field</dt><dd>On Euler-TRM, penalty on ReLU(⟨V(s)−V(s′), s−s′⟩/‖s−s′‖² + μ) for the joint vector field V, μ ≈ 0.1. It targets a one-sided Lipschitz constant ≤ −μ, under which trajectories of the continuous flow would converge toward each other; this is not reached at the measured states (median λ<sub>max</sub>(sym J<sub>V</sub>) between 2.3 and 2.5 across seeds, above 0), and the model's discrete, block-sequential Euler steps (h = 0.5) are guaranteed to inherit it if roughly h‖J<sub>V</sub>‖² &lt; 2μ (a sufficient condition).</dd>
         <dt>Data</dt><dd>Seeded 1,000-puzzle training set with 1,000 augmentations each. Runs used an RTX 4090 Laptop GPU and RTX 5080s; each run's summary.json records the GPU it finished on.</dd>
       </dl>
     </div>
@@ -284,7 +284,7 @@ window.report = (() => {
     description: 'Exact accuracy (100k test puzzles, 16 steps) of one arm minus its reference on the same seed, in points.',
     fn: (seeds) => {
       const get = (arm, s) => seeds.find((r) => r.arm === arm && r.seed === s);
-      const pairs = [['A1', 'A0@T', 'V1 cap 0.95 vs vanilla'], ['A2', 'A0@T', 'Euler-TRM vs vanilla'], ['A3', 'A2', 'V2 penalty on Euler-TRM']];
+      const pairs = [['A1', 'A0@T', 'V1 cap 0.95 vs vanilla'], ['A2', 'A0@T', 'Euler-TRM vs vanilla'], ['A3', 'A2', 'V2 penalty on Euler-TRM'], ['A3', 'A0@T', 'Euler + V2 vs vanilla']];
       const out = [];
       for (const [a, b, name] of pairs) for (const s of [0, 1, 2]) {
         const x = get(a, s), y = get(b, s);

@@ -18,7 +18,7 @@ D2 `dec_out`    : the decoded part of the next state is rho-Lipschitz in the ful
 V2 `flow_mono`  : V(s) = joint Euler-TRM vector field. Constraint  <V(s)-V(s~), s-s~> / ||s-s~||^2 <= -mu.
                   Penalty ReLU(q + mu). mu defaults to -ln(1 - eta) / h_H (the continuous-time rate whose
                   time-h_H flow contracts z_H by 1 - eta); it is a hyperparameter, not an exact match of V1
-                  (an explicit Euler step only contracts if h ||J_V||^2 < 2 mu; compare arms with the
+                  (an explicit Euler step is guaranteed to contract if h ||J_V||^2 < 2 mu, a sufficient condition; compare arms with the
                   common yardsticks logged by `monitor` and the diagnostics script).
 
 Pairs are adversarial: s~ = s + delta, |delta| = eps * ||s|| with eps log-uniform, delta from power iteration

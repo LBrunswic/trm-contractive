@@ -11,8 +11,9 @@ __pycache__/
 /wandb/
 /outputs/
 
-# results/ is tracked (metrics, evaluations, diagnostics, report); never weights, resume states or code snapshots
+# results/ is tracked (metrics, evaluations, diagnostics, report); never weights, resume states, code snapshots or wandb data
 results/**/step_*
 results/**/last_state.pt*
 results/**/*.pt
 results/**/*.py
+results/**/wandb/

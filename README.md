@@ -2,18 +2,24 @@
 
 This repository trains Tiny Recursive Models (TRM) on Sudoku-Extreme with penalties that push the recursive
 latent update towards a contraction, and measures what they do. Eleven arms are compared under one reduced
-training budget: plain TRM, a Lipschitz cap on TRM's cycle map at four strengths, a damped "Euler-TRM"
-reparameterisation alone and combined with a monotone (one-sided Lipschitz) vector-field penalty, and two
-penalties that only constrain the part of the state the answer decoder reads. Every arm except A5 (see *Missing
+training budget: plain TRM, a Lipschitz cap on TRM's cycle map at four strengths, a damped "Euler-TRM" update
+with a learned time embedding, alone and combined with a monotone (one-sided Lipschitz) vector-field penalty, two
+penalties that only constrain the part of the state the answer decoder reads, and the Lipschitz cap and one decoder
+penalty on Euler-TRM (A4, A10). Every arm except A5 (full-test accuracy and training metrics only; see *Missing
 evaluations*) is evaluated for accuracy, fixed-point residuals, Jacobian-based contraction measures, accuracy from
-many random starting states, and residual-based stopping. Every Lipschitz cap that binds lowers accuracy. The damped
-Euler update alone gains 2.98 ± 2.30 points over TRM at the same 35k steps (A0@T) on three paired seeds, which is not
-significant at n = 3, and stays 2.23 points below TRM trained for 45k steps. The monotone penalty on Euler-TRM costs
+many random starting states, and residual-based stopping. Every Lipschitz cap that binds lowers accuracy (three seeds
+at cap 0.95 on TRM; one seed at caps 1, 2 and 4 and for the cap on Euler-TRM). Euler-TRM
+without a penalty (h = 0.5 plus the learned time embedding; no arm separates the two) gains 2.98 ± 2.30 points over
+TRM at the same 35k steps (A0@T) on three paired seeds, which is not significant at n = 3, and is 2.23 ± 2.33 points
+below TRM trained for 45k steps (paired per seed −2.44, −4.45, +0.20). The monotone penalty on Euler-TRM costs
 4.85 ± 4.65 points against Euler-TRM from the standard start (10.16 on one seed), which puts it below TRM at equal
-steps (61.93 vs 63.80 on the 100k subset). In exchange, from fully random starts, all 16 starting states (one
+steps on average (61.93 vs 63.80 on the 100k subset; paired −1.87 ± 2.74, not significant, and above TRM on seed 0).
+In exchange, from fully random starts, all 16 starting states (one
 canonical and 15 random) return the same board for 56.70 ± 6.88% of puzzles. In the other arms that learned the task,
-the arm means are at most 10.47% (one A0@T seed reaches 29.80%). From starts close to the canonical one, the gap is
-much smaller (see *Random starts*).
+the arm means are at most 10.47% (one A0@T seed reaches 29.80%). From starts close to the canonical one, the gap to
+the other Euler-TRM arms is much smaller, but TRM stays well below A3 on average (57.10 ± 5.89% for A3, against
+23.37 ± 25.13% for A0@T and 23.20 ± 13.72% for A0; on seed 2, A0@T is level with A3 at 52.20 vs 50.30; see
+*Random starts*).
 
 ## Credit
 
@@ -42,8 +48,9 @@ model; the new model, flags and regularizers are opt-in. Some defaults of shared
 
 **Fixed-point view.** TRM keeps a latent state `s = (z_H, z_L)`. One *cycle* `Φ` updates `z_L` six times and
 then `z_H` once; one ACT step `Ψ` applies three cycles. At evaluation, the answer is decoded from `z_H` after 16
-ACT steps; in training, upstream's learned (Q-learning) halting gives each puzzle up to 16 deeply supervised ACT
-steps. Inference can be read as an iteration of `Ψ` towards a fixed point, from which
+ACT steps; in training, upstream's learned halting (a halt head trained with binary cross-entropy on whether the
+current answer is correct; the Q-learning continue loss is off, `no_ACT_continue: True`) gives each puzzle up to 16
+deeply supervised ACT steps. Inference can be read as an iteration of `Ψ` towards a fixed point, from which
 the answer is decoded. If `Φ` were a
 contraction, that fixed point would be unique, would not depend on the starting state, and iteration would
 reach it geometrically. The question tested here is whether imposing contraction-type properties during
@@ -54,11 +61,16 @@ starting state.
 `ρ = 1 − η = 0.95` (A1), 1 (A5), 2 (A6) or 4 (A7). Norms are joint Euclidean norms over the whole state, in fp32.
 
 **V2: Euler-TRM with a monotone field.** Euler-TRM replaces each update `z ← F(z, ·)` by
-`z ← z + h·(F(z, · + τ(t)) − z)` with step `h = 0.5` and a sinusoidal time embedding `τ`. This is an explicit Euler
+`z ← z + h·(F(z, · + τ(t)) − z)` with step `h = 0.5` and a learned time embedding `τ`: a zero-initialised linear
+projection of sinusoidal features of the substep index `t` (33,280 extra parameters). This is an explicit Euler
 step of `dz/dt = F(z) − z`; `h = 1` with `τ = 0` recovers TRM exactly (tested). V2 penalises
 `ReLU(⟨V(s) − V(s′), s − s′⟩ / ‖s − s′‖² + μ)` for the joint vector field
 `V(s) = (F(z_H, z_L + τ_H) − z_H, F(z_L, z_H + x + τ_L) − z_L)`. A one-sided Lipschitz constant `≤ −μ` makes
-trajectories of the continuous flow approach each other at rate `μ`. Here `μ = −ln(1 − η)/h ≈ 0.103`.
+trajectories of the continuous flow approach each other at rate `μ`. Here `μ = −ln(1 − η)/h ≈ 0.103`. That rate
+holds for the continuous joint flow `ds/dt = V(s)` with `τ` held fixed. The model instead takes block-sequential
+explicit Euler steps (six `z_L` substeps per `z_H` substep, `h = 0.5`, a different `τ` at each substep), which
+are guaranteed to inherit the contraction only under a stronger, sufficient condition, roughly `h‖J_V‖² < 2μ ≈ 0.2`
+(see [models/regularizers.py](models/regularizers.py)).
 
 **Decoder-aware penalties.** Two different starting states only need to agree on what the decoder reads, not on
 the whole latent. Let `P` project the state onto the decoder-visible subspace: the answer tokens of `z_H`
@@ -76,9 +88,23 @@ that maximise the constrained quotient, warm-started per puzzle across ACT steps
 The penalty weight λ follows dual ascent towards a 10% violation rate and is frozen during learning-rate warmup.
 The regularizer runs outside the compiled training graph, on detached anchor states, with its own random number
 generator. The main training path therefore consumes the same randomness in every arm, and arms that share a seed
-are paired: same initialisation and same data order. All arms, including A0, log the V1/V2 monitors during training
-(`mon/v1_*`, `mon/v2_*`, `mon/fpres`); the decoder-subspace monitors (`mon/dec_*`) exist only for A4 and A6–A10,
-which ran on later code. The details are in the docstring of [models/regularizers.py](models/regularizers.py).
+are paired: same seed, same data order and same random-number stream. The initialisation is bitwise identical only
+between runs initialised on the same GPU model, because the weights are initialised on the GPU and PyTorch's CUDA
+random-number output for large tensors depends on the device (its number of multiprocessors). Seed 0 ran on two GPU
+models: `A0_s0` and `A1_s0` finished on the RTX 4090 Laptop GPU (the GPU of their 5k-step pilots is not recorded),
+`A5_s0` ran on it throughout, and `A2_s0`, `A3_s0`, A4 and A6–A10 ran on RTX 5080s. Seed-0 differences across GPU
+models may therefore include an initialisation difference; seeds 1 and 2 ran on RTX 5080s only. All arms,
+including A0, log the V1/V2 monitors during training (`mon/v1_*`, `mon/v2_*`, `mon/fpres`); the decoder-subspace
+monitors (`mon/dec_*`) exist only for A4 and A6–A10, which ran on later code. The details are in the docstring of
+[models/regularizers.py](models/regularizers.py).
+
+**Related methods.** The adversarial pair search uses power iteration in the manner of adversarial Lipschitz
+regularization (D. Terjék, *Adversarial Lipschitz Regularization*, ICLR 2020,
+[arXiv:1907.05681](https://arxiv.org/abs/1907.05681)). Monotone (one-sided Lipschitz) operators give
+unique fixed points in monotone operator equilibrium networks (E. Winston and J. Z. Kolter, *Monotone operator
+equilibrium networks*, NeurIPS 2020, [arXiv:2006.08591](https://arxiv.org/abs/2006.08591)). Jacobian penalties on
+fixed-point networks are studied in S. Bai, V. Koltun and J. Z. Kolter, *Stabilizing Equilibrium Models by Jacobian
+Regularization*, ICML 2021 ([arXiv:2106.14342](https://arxiv.org/abs/2106.14342)).
 
 ## Arms
 
@@ -96,21 +122,24 @@ which ran on later code. The details are in the docstring of [models/regularizer
 | A9 | TRM | D2, decoded output 1-Lipschitz | 0 | `arch.reg_mode=dec_out ++arch.reg_rho=1.0` |
 | A10 | Euler-TRM | Dγ, ρ = 0.95, γ = 0.3 | 0 | `arch.flow=True arch.reg_mode=dec_semi ++arch.reg_rho=0.95 ++arch.reg_gamma=0.3 arch.reg_frac=0.125` |
 
-Common setup for every arm: the TRM-MLP Sudoku recipe from the upstream README (about 5.0M parameters), with batch
+Common setup for every arm: the TRM-MLP Sudoku recipe from the upstream README (5.03M parameters; 5.06M for the
+Euler-TRM arms, whose time-embedding projection adds 33,280), with batch
 256 instead of 768; constant learning rate 1e-4 after 2,000 warmup steps and EMA 0.999, as upstream; up to 16 ACT
 steps in training (learned halting, as upstream), while the standard evaluation runs exactly 16; 35k optimizer steps.
 `config/cfg_sudoku_bench.yaml` holds these settings (batch 256, 8,960 epochs = 35k steps, evaluation every 1,280
 epochs = 5k steps). A0 continues to 45k steps as an approximately compute-matched control, since the penalised arms
-spend extra forward and backward passes on the regularizer. On the same GPU and seed, V1 trains at about 0.68× and
-V2 at about 0.78× TRM's throughput, so 35k penalised steps cost roughly 51k (V1) and 45k (V2) TRM steps: the match
-is close for V2, and V1 gets somewhat more compute than A0. Throughput also varies by up to 1.6× between runs on
-the same GPU model, so the match cannot be made exact. With a constant learning rate, A0@T is A0's checkpoint at the
+spend extra forward and backward passes on the regularizer. On the same GPU and seed, V1 trains at about 0.68–0.72×
+(0.68 on seeds 1 and 2, 0.72 on seed 0) and V2 at about 0.78× TRM's throughput (seeds 1 and 2), so 35k penalised
+steps cost roughly 48–52k (V1) and 45k (V2) TRM steps: the match is close for V2, and V1 gets somewhat more compute
+than A0. Throughput also varies by up to about 1.65× between runs on the same GPU model, so the match cannot be made
+exact. With a constant learning rate, A0@T is A0's checkpoint at the
 same 35k steps as the other arms.
 
 ## Main results
 
 Exact accuracy (whole board correct) after 16 ACT steps, in %. The full test set has 422,786 puzzles and was
-evaluated for seed 0. The fixed 100k-puzzle subset (standard error ≈ 0.15 pp) was evaluated for every seed. The
+evaluated for seed 0. The fixed 100k-puzzle subset (standard error ≈ 0.15 pp) was evaluated for every run except
+`A5_s0` (see *Missing evaluations*). The
 three-seed arms show mean ± sample std. The last column runs inference for 64 ACT steps on a 25k subset (models
 are trained with up to 16).
 Source: [results/sudoku-contractive/report/benchmark.md](results/sudoku-contractive/report/benchmark.md) and the
@@ -174,43 +203,59 @@ and 64 ACT steps, in %, mean ± sd over seeds where three exist (from `benchmark
   for 56.70 ± 6.88% of puzzles (per seed 61.40, 59.90, 48.80). In every other arm with usable accuracy, the arm mean
   is at most 10.47 ± 16.76% (A0@T; per seed 0.00, 1.60, 29.80). A random start does about as well as the canonical
   one (member mean 69.26 vs single 69.20). For A2 without the penalty, random starts drop to 33.48 ± 19.16. Starts
-  close to the canonical one (init `noise:0.5`) shrink the gap: unanimity is 57.10 ± 5.89 for A3, 42.40 ± 14.75 for
-  A2 (57.30 on seed 0), 41.80 for A4 and 47.90 for A10 (`benchmark.md`).
+  close to the canonical one (init `noise:0.5`) shrink the gap to the other Euler-TRM arms: unanimity is
+  57.10 ± 5.89 for A3, 42.40 ± 14.75 for A2 (57.30 on seed 0), 41.80 for A4 and 47.90 for A10 (`benchmark.md`).
+  TRM stays well below on average: 23.37 ± 25.13 for A0@T and 23.20 ± 13.72 for A0 (6.10 and 20.40 on seed 0;
+  A0@T reaches 52.20 on seed 2, above A3's 50.30).
 * **Min-residual selection (A3).** Picking the trajectory with the smallest residual reaches 81.00 ± 5.74%
   (per seed 86.30, 81.80, 74.90), 11.8 points above A3's own canonical start. It uses 16 trajectories, so the
   comparable baselines are the other 16-trajectory selectors: A2 reaches 79.17 ± 2.32 by vote and 78.50 ± 5.28 by
-  min-residual from noisy starts, and A0 at 45k steps reaches 82.37 ± 3.93 by vote from random starts, above A3.
+  min-residual from noisy starts, and A0 at 45k steps reaches 82.37 ± 3.93 by vote from random starts, comparable
+  to A3's 81.00 ± 5.74 (A0 − A3 per seed: −7.0, +5.0, +6.1).
   From fully random starts, min-residual selection for TRM and plain Euler-TRM falls below their single canonical
-  run (46.83 ± 30.09 for A0@T, 35.50 ± 25.95 for A2): their random starts often end on wrong boards with a smaller
-  residual than the canonical run. From noisy starts it is above the single run for A2 (78.50 vs 72.13), level for
-  A0 (75.07 vs 74.87) and slightly below for A0@T (67.20 vs 68.53).
+  run on average: 46.83 ± 30.09 vs 68.53 for A0@T (per seed −54.3, −11.2, +0.4, so mixed in sign), 35.50 ± 25.95 vs
+  72.13 for A2 and 61.87 ± 7.59 vs 74.87 for A0 (below on every seed for both). Their random starts often end on
+  wrong boards with a smaller residual than the canonical run. From noisy starts it is above the single run for A2
+  (78.50 vs 72.13; per seed +10.3, +2.8, +6.0), level for A0 (75.07 vs 74.87; 0.0, −1.0, +1.6) and below on average
+  for A0@T, with mixed sign (67.20 vs 68.53; per seed −8.5, −2.1, +6.6).
 * **Majority vote** helps TRM and Euler-TRM (A0@T 68.53 → 74.50, A2 72.13 → 76.63, A3 69.20 → 77.07), but not
   the V1-capped arms A6 and A7. For A0, A2 and A3, the vote share is a well-ranked confidence score
-  (AUROC 0.97–1.00; `benchmark.md`).
+  (AUROC arm means 0.97–1.00 in `benchmark.md`; per seed (`pop_eval.json`) down to 0.93, for A2 seed 2 from random starts).
 * **A1's agreement is not useful.** A1 shows 21.90 ± 18.35% unanimity, but its boards are mostly wrong: about 11% of
   puzzles are solved.
 
 **Residual-based stopping.** Each trajectory stops at the earliest ACT step where its residual falls below τ, with a
 maximum of 64 steps. With τ = 0.02 and init `noise:0.5`, the single-trajectory accuracy equals the 64-step accuracy
 for A0, A2, A7, A8 and A9. For example, A0@T scores 68.53 ± 1.56 both ways, and its canonical trajectory stops after
-26.83 ± 1.03 ACT steps on average instead of 64 (26.33 ± 1.89 averaged over all 16 members). Under V1 the residual
-is already small after about 3 steps, before the answer is right, and A1's accuracy drops from 10.83 to 2.40 with
-this rule.
+26.83 ± 1.03 ACT steps on average instead of 64 (26.33 ± 1.89 averaged over all 16 members). Under V1 at ρ = 0.95 on
+TRM (A1), the residual is already small after about 3 steps, before the answer is right, and A1's accuracy drops
+from 10.83 to 2.40 with this rule. A4 (V1 at ρ = 0.95 on Euler-TRM) stops after about 17.7 steps and loses 0.8
+points (54.20 to 53.40).
 
 ![Residual-based stopping](results/sudoku-contractive/report/figs/stopping_time.png)
 
 ## Contraction diagnostics
 
 `scripts/fixed_point_diagnostics.py` measures residuals on 1,000 test puzzles and, for 256 of them, the Jacobians of
-the trained operators at the step-16 state, in fp32, by power iteration. None of the penalties makes the cycle map
-`Φ` contractive in the local (Jacobian) sense at those states. The median `σ_max(J_Φ)` is 2.16 ± 0.54 for A1, against
-4.96 ± 0.65 for A0@T. In every evaluated arm, `σ_max(J_Φ)` exceeds the arm's own cap ρ (0.95 for the unpenalised
-arms) on 100% of those puzzles. The ACT-step map `Ψ` behaves differently under V1: for A1, the median `σ_max(J_Ψ)`
-is 0.92 ± 0.01 and `σ_max(J_Ψ)` is below 1 on about 65% of the measured states (34–36% above 1 per seed), whereas
-it exceeds 1 on every measured state in every other arm. The median `λ_max(sym J_V)` for A3 is 2.43 ± 0.10, which
-is positive, whereas V2 targets ≤ −μ. The penalties hold the violation rate on the sampled adversarial secant pairs
-near the 10% target (`viol (end)` in `benchmark.md`). They do not certify a global or local bound. The median spectral radius of the
-ACT-step Jacobian, ρ(J_Ψ), lies between 0.76 and 1.14 across arms (0.87 ± 0.35 for A0@T, 1.01 ± 0.02 for A3).
+the trained operators in fp32: `J_Ψ` at the step-16 state `s_16`, and `J_Φ` at the state entering the last cycle of
+the next ACT step. They are estimated by power iteration, with 20 iterations for `σ_max(J_Ψ)` and `σ_max(J_Φ)` and
+30 for the spectral radius, `λ_max(sym J_V)` and the decoder-subspace quotients. A power-iteration `σ_max` is a lower
+bound: a state counted above a threshold is above it, while a state counted below it is not certified. None of the
+penalties makes the cycle map `Φ` contractive in the local (Jacobian) sense at those states. The median `σ_max(J_Φ)`
+is 2.16 ± 0.54 for A1, against 4.96 ± 0.65 for A0@T. In every evaluated arm, `σ_max(J_Φ)` exceeds 1 on 100% of
+those puzzles, and in the V1 arms it also exceeds their cap ρ on all of them. The decoder-aware penalties bound other
+quotients: for Dγ, the median `σ_max(P·J_Φ·W_γ⁻¹)` is 1.82 (A8) and 2.04 (A10), above ρ = 0.95 on every measured
+state; for D2, the median `σ_max(P·J_Φ)` is 1.00 (A9), above 1 on 53% of them. A1's decoder-subspace rows in
+`benchmark.md` (D1, D2, leak and `W_γ` quotients) come from seed 0 only; the diagnostics of `A1_s1` and `A1_s2` do
+not include them. The ACT-step map `Ψ` behaves differently under V1 at ρ = 0.95 on TRM (A1): the median
+`σ_max(J_Ψ)` estimate is 0.92 ± 0.01 and the estimate is below 1 on about 65% of the measured states (34–36% above
+1 per seed; being a lower bound, it does not certify `σ_max(J_Ψ) < 1` there), whereas it exceeds 1 on every measured
+state in every other arm, including A4 (V1 at ρ = 0.95 on Euler-TRM, median 23.64). The median `λ_max(sym J_V)` for A3 is 2.43 ± 0.10, which is positive,
+whereas V2 targets ≤ −μ. The penalties hold the violation rate on the sampled adversarial secant pairs near the 10%
+target (`viol (end)` in `benchmark.md`). They do not certify a global or local bound. The median spectral radius of
+the ACT-step Jacobian, ρ(J_Ψ), has arm means from 0.76 to 1.14 (0.87 ± 0.35 for A0@T, 1.01 ± 0.02 for A3); per run
+it ranges from 0.58 (A0, seed 0) to 1.26 (A0@T, seed 2). The seeds of A0 and A0@T fall on both sides of 1, and
+A3's seeds are within 0.03 of 1 (0.995 to 1.025).
 All rows are in [`benchmark.md`](results/sudoku-contractive/report/benchmark.md).
 
 More figures: [in-training evaluation](results/sudoku-contractive/report/figs/eval_curves.png),
@@ -225,18 +270,22 @@ More figures: [in-training evaluation](results/sudoku-contractive/report/figs/ev
 
 * **Reduced budget.** 35k steps at batch 256 is about 18% of the training examples in the upstream Sudoku recipe
   (50,000 epochs at batch 768, about 65k steps); A0 at 45k steps sees about 23%. Training also uses a seeded
-  1,000-puzzle × 1,000-augmentation subset, because the paper's subset is unknown. Absolute accuracies (64–69% for TRM) are therefore well below the
-  paper's ~87%. The comparisons are between arms trained under identical conditions; whether they hold at full
-  budget is not tested here.
+  1,000-puzzle × 1,000-augmentation subset, because the paper's subset is unknown. Absolute accuracies (64–69% for
+  TRM) are well below the paper's ~87%, likely because of the reduced budget, the smaller batch and the different
+  subset; none of these was tested separately. The comparisons are between arms trained under identical conditions;
+  whether they hold at full budget is not tested here.
 * **Seeds.** A0–A3 have three seeds (0, 1, 2); A4–A10 have seed 0 only, so their differences carry no seed-variance
   estimate. With n = 3, the A2 − A0@T and A3 − A2 contrasts are not significant at conventional levels (t = 2.24 and
   −1.81 on 2 dof); only the V1 effect is unambiguous. A3's seed spread is large (58.00–65.20 on the 100k subset).
 * **A3 versus A2.** The V2 penalty costs canonical-start accuracy: −4.85 ± 4.65 pp on the 100k subset (−10.16 on
-  seed 2), 65.08 vs 66.65 on the full test (seed 0), and A3 is below TRM at equal steps (61.93 vs 63.80 on the 100k
-  subset). The gains above concern agreement across random starts and min-residual selection over 16 trajectories,
-  which cost 16 times the inference compute.
+  seed 2), 65.08 vs 66.65 on the full test (seed 0), and A3 is below TRM at equal steps on average (61.93 vs 63.80
+  on the 100k subset; paired +0.85, −1.83, −4.63, mean −1.87 ± 2.74, t = −1.18, not significant). On seed 0, A3 is
+  above A0@T on both the 100k subset (65.20 vs 64.36) and the full test (65.08 vs 64.20). The gains above concern
+  agreement across random starts and min-residual selection over 16 trajectories, which cost 16 times the inference
+  compute.
 * **Full test set and raw-weight diagnostics are seed 0 only**, by design (`FULL_TEST_SEEDS=0`). Three-seed
-  statistics use the fixed 100k subset. Population and Jacobian diagnostics use a 1,000-puzzle subset.
+  statistics use the fixed 100k subset. Population and Jacobian diagnostics use a 1,000-puzzle subset (Jacobians on
+  256 of those puzzles).
 * **Missing evaluations.** Some post-training evaluations were paused and are not in this repository:
   `A1_s0/diag_raw.json` and `A5_s0/diag_raw.json` (diagnostics of the non-EMA weights), and for A5 (`A5_s0`)
   `eval_100k.json`, `eval_ext64.json`, `diag.json` and `pop_eval.json`. A5 is reported only through its full-test
@@ -248,13 +297,23 @@ More figures: [in-training evaluation](results/sudoku-contractive/report/figs/ev
   is the repository HEAD when the run finished, which can be later than the code the run loaded, and it refers to
   the development history of this code, which is not published. `A0_s0` records upstream `c011037` because it was
   launched from uncommitted changes on top of upstream; that commit is not the code that ran. This repository
-  contains the final state of the code. Code snapshots saved at the start of each run show that the model and loss
-  code are identical to this repository in every run, and that `models/regularizers.py` went through three
-  versions: A0–A3 and A5 used the first, A4, A6, A7 and A9 the second, and A8 and A10 the final one. The method
+  contains the final state of the code. Each launch of a run, including a resume, overwrites the run's code
+  snapshot (model, loss and regularizer files). `A0_s0` and `A1_s0` were resumed at step 5,000 from 5k-step pilot
+  runs whose code was not kept, so their snapshots cover steps 5,000 onward only. The snapshots show that the model
+  and loss code are identical to this repository in every run, and that `models/regularizers.py` went through three
+  versions: A0–A3 and A5 used the first, A4, A6, A7 and A9 the second, and A8 and A10 the final one. The pilot of
+  `A1_s0` logged the same training metrics as runs on the first version. The pilot of `A0_s0` used an earlier
+  `models/regularizers.py` (no `mon/gain_F` monitor before step 5,000), which affects only its training-time monitor
+  values for the first 5,000 steps (and the training-monitor figure); its model code for those steps is not
+  recorded. The method
   of each arm is unchanged across versions, but the final training-time monitor draws extra random numbers from
   the regularizer's generator (for the decoder-subspace monitors). A rerun with this code therefore samples
   different regularizer pairs in the penalised arms other than A8 and A10, and logs different monitor values in
-  A0 and A2. The main training path (model, data order, ACT exploration) is unaffected.
+  A0 and A2. The main training path (model, data order, ACT exploration) is unaffected. In `benchmark.md`, `train h`
+  of `A0_s0` and `A1_s0` is the `train_s` of `summary.json`, which covers only the resumed segment and excludes the
+  5k-step pilot, and `steps/s` divides all their steps by it: 7.03 h and 1.78 steps/s for `A0_s0`, 7.35 h and
+  1.32 steps/s for `A1_s0`. Adding the pilot's logged wall time gives about 8.1 h (1.55 steps/s) and 8.7 h
+  (1.12 steps/s). The A0 and A1 means of these two rows include these values.
 * `figs/cap_sweep.png` and the HTML summary were made from the same run files with plotting code that is not
   included. Everything else in `report/` is regenerated by `scripts/summarize.py` (see below).
 
@@ -367,7 +426,9 @@ MIT, as upstream. See [LICENSE](LICENSE): the upstream copyright notice of Samsu
 and the modifications in this repository are Copyright (c) 2026 Leo Brunswic. Third-party components keep their own
 licenses (see [LICENSES/](LICENSES/README.md)): `models/adam_atan2_torch.py` and the reference in
 `tests/test_adam_atan2_torch.py` are derived from [adam-atan2](https://github.com/imoneoi/adam_atan2) 0.0.3
-(Apache License 2.0), and the HTML report inlines [d3](https://d3js.org) v7.9.0 (ISC license).
+(Apache License 2.0), and the HTML report inlines [d3](https://d3js.org) v7.9.0 (ISC license). Code and data that
+upstream TRM inherited from earlier projects (HRM, ARC-AGI, ConceptARC) keep the terms of their original sources (see
+[LICENSES/](LICENSES/README.md)).
 
 ## Citation
 
