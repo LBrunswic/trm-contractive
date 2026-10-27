@@ -1,0 +1,7 @@
+d3beb1be7d378fecfdd7c586df73c019f354c6da075e5855abfbc9f148d1af14  data/sudoku-extreme-1k-aug-1000-s0/train/all__inputs.npy
+2636fc6c633c8f13aacd533d99aeaba2dcbc2c1e8e41c21d1ed6055d66242047  data/sudoku-extreme-1k-aug-1000-s0/train/all__labels.npy
+cbc2ab9f1743d79da9c0c26273460140bf542a5fb3229cfdd80575615163bcd5  data/sudoku-extreme-1k-aug-1000-s0/test/all__inputs.npy
+6defa650d6682f50d8dd1b9583136f1187578a4473bc22dea15fe291377161a7  data/sudoku-extreme-test1k/test/all__inputs.npy
+46d5dafc5a16ad7fec1a511fdce5ea14d40da497a44ed5fba64ae5e6eb849c9a  data/sudoku-extreme-test10k/test/all__inputs.npy
+14a2e7dcb085846c7da4eb35a41cd550d6c5b54613b6a88ca7929b6b49e3abde  data/sudoku-extreme-test25k/test/all__inputs.npy
+858f07df35eeeccdac5b25b6b63a8317b72126c28a7ab6c5b6fe80ae7339e981  data/sudoku-extreme-test100k/test/all__inputs.npy

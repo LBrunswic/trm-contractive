@@ -17,11 +17,13 @@ cli = ArgParser()
 
 class DataProcessConfig(BaseModel):
     source_repo: str = "sapientinc/sudoku-extreme"
+    source_revision: Optional[str] = None  # None = latest, as upstream; the benchmark used 58942f96baeb572ca3127e2a9e9c70f330783d6b
     output_dir: str = "data/sudoku-extreme-full"
 
     subsample_size: Optional[int] = None
     min_difficulty: Optional[int] = None
     num_aug: int = 0
+    seed: Optional[int] = 0  # None reproduces the upstream (unseeded) behaviour
 
 
 def shuffle_sudoku(board: np.ndarray, solution: np.ndarray):
@@ -62,7 +64,7 @@ def convert_subset(set_name: str, config: DataProcessConfig):
     inputs = []
     labels = []
     
-    with open(hf_hub_download(config.source_repo, f"{set_name}.csv", repo_type="dataset"), newline="") as csvfile:
+    with open(hf_hub_download(config.source_repo, f"{set_name}.csv", repo_type="dataset", revision=config.source_revision), newline="") as csvfile:
         reader = csv.reader(csvfile)
         next(reader)  # Skip header
         for source, q, a, rating in reader:
@@ -159,6 +161,8 @@ def convert_subset(set_name: str, config: DataProcessConfig):
 
 @cli.command(singleton=True)
 def preprocess_data(config: DataProcessConfig):
+    if config.seed is not None:
+        np.random.seed(config.seed)  # covers the train subsample and every augmentation
     convert_subset("train", config)
     convert_subset("test", config)
 

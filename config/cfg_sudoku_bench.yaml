@@ -1,0 +1,55 @@
+# Sudoku-Extreme benchmark config: the upstream README MLP-T Sudoku recipe (pretrain_mlp_t_sudoku) set explicitly
+# (cfg_pretrain.yaml defaults differ), at the benchmark schedule: batch 256 instead of 768, 8,960 epochs = 35k steps
+# instead of 50,000 epochs, evaluation every 1,280 epochs = 5k steps. scripts/run_benchmark.sh passes these explicitly.
+
+defaults:
+  - arch: trm_contractive
+  - _self_
+
+hydra:
+  output_subdir: null
+  run:
+    dir: logs/hydra/${now:%Y%m%d_%H%M%S}
+
+# Data path
+data_paths: ['data/sudoku-extreme-1k-aug-1000-s0']
+data_paths_test: ['data/sudoku-extreme-test10k']
+
+evaluators: []
+
+# Hyperparams - Training
+global_batch_size: 256
+
+epochs: 8960
+eval_interval: 1280
+checkpoint_every_eval: True
+
+lr: 1e-4
+lr_min_ratio: 1.0
+lr_warmup_steps: 2000
+
+beta1: 0.9
+beta2: 0.95
+weight_decay: 1.0
+puzzle_emb_weight_decay: 1.0
+
+# Hyperparams - Puzzle embeddings training
+puzzle_emb_lr: 1e-4
+
+seed: 0
+min_eval_interval: 0 # when to start the eval
+
+ema: True # use Exponential-Moving-Average
+ema_rate: 0.999 # EMA-rate
+freeze_weights: False # If True, freeze weights and only learn the embeddings
+
+project_name: sudoku-contractive
+run_name: null
+checkpoint_path: null
+load_checkpoint: null
+
+max_train_steps: null
+log_every: 50
+abort_on_nan: True
+resume: True
+save_raw_final: True

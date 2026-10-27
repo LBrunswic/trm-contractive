@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Benchmark artifacts at the repository root (datasets, weights, logs, regenerated reports)
+/data/
+/checkpoints/
+/logs/
+/reports/
+/wandb/
+/outputs/
+
+# results/ is tracked (metrics, evaluations, diagnostics, report); never weights, resume states or code snapshots
+results/**/step_*
+results/**/last_state.pt*
+results/**/*.pt
+results/**/*.py

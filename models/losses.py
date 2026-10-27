@@ -96,8 +96,19 @@ class ACTLossHead(nn.Module):
             q_continue_loss = F.binary_cross_entropy_with_logits(outputs["q_continue_logits"], outputs["target_q_continue"], reduction="sum")
 
             metrics["q_continue_loss"] = q_continue_loss.detach()
+
+        # Fixed-point residual ||Phi(s) - s|| / ||s|| of the last (grad) cycle, for models exporting anchors
+        if "reg_s_H" in outputs:
+            with torch.no_grad():
+                res2 = sum((outputs[f"reg_phi_{b}"].float() - outputs[f"reg_s_{b}"].float()).square().flatten(1).sum(-1) for b in "HL")
+                ref2 = sum(outputs[f"reg_s_{b}"].float().square().flatten(1).sum(-1) for b in "HL")
+                metrics["fpres"] = torch.where(valid_metrics, torch.sqrt(res2 / ref2.clamp_min(1e-12)), 0).sum()
+
         # Filter outputs for return
         detached_outputs = {k: outputs[k].detach() for k in return_keys if k in outputs}
+        if self.training:
+            # Detached regularizer anchors, consumed by train_batch outside the compiled graph
+            detached_outputs.update({k: v for k, v in outputs.items() if k.startswith("reg_")})
 
         return new_carry, lm_loss + 0.5 * (q_halt_loss + q_continue_loss), metrics, detached_outputs, new_carry.halted.all()
 

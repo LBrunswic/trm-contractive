@@ -2,10 +2,14 @@ from typing import Optional, Any, Sequence, List
 from dataclasses import dataclass
 import os
 import math
+import json
+import time
+import subprocess
 import yaml
 import shutil
 import copy
 
+import numpy as np
 import torch
 import torch.distributed as dist
 from torch import nn
@@ -17,12 +21,16 @@ import coolname
 import hydra
 import pydantic
 from omegaconf import DictConfig
-from adam_atan2 import AdamATan2
+try:
+    from adam_atan2 import AdamATan2
+except (ImportError, OSError):  # CUDA extension unavailable (e.g. no nvcc): exact pure-PyTorch port
+    from models.adam_atan2_torch import AdamATan2
 
 from puzzle_dataset import PuzzleDataset, PuzzleDatasetConfig, PuzzleDatasetMetadata
 from utils.functions import load_model_class, get_model_source_path
 from models.sparse_embedding import CastedSparseEmbeddingSignSGD_Distributed
 from models.ema import EMAHelper
+from models.regularizers import RegConfig, ContractionRegularizer
 
 
 class LossConfig(pydantic.BaseModel):
@@ -82,6 +90,13 @@ class PretrainConfig(pydantic.BaseModel):
     ema: bool = False # use Exponential-Moving-Average
     ema_rate: float = 0.999 # EMA-rate
     freeze_weights: bool = False # If True, freeze weights and only learn the embeddings
+
+    # Benchmark infrastructure
+    max_train_steps: Optional[int] = None  # hard cap on optimizer steps (smoke tests)
+    log_every: int = 50                    # JSONL train-metric window
+    abort_on_nan: bool = True
+    resume: bool = True                    # resume from <checkpoint_path>/last_state.pt if present
+    save_raw_final: bool = True            # also save the raw (non-EMA) weights at the end
 
 @dataclass
 class TrainState:
@@ -217,6 +232,8 @@ def cosine_schedule_with_warmup_lr_lambda(
 def init_train_state(config: PretrainConfig, train_metadata: PuzzleDatasetMetadata, rank: int, world_size: int):
     # Estimated total training steps
     total_steps = int(config.epochs * train_metadata.total_groups * train_metadata.mean_puzzle_examples / config.global_batch_size)
+    if config.max_train_steps is not None:
+        total_steps = min(total_steps, config.max_train_steps)
 
     # Model
     model, optimizers, optimizer_lrs = create_model(config, train_metadata, rank=rank, world_size=world_size)
@@ -239,6 +256,47 @@ def save_train_state(config: PretrainConfig, train_state: TrainState):
 
     os.makedirs(config.checkpoint_path, exist_ok=True)
     torch.save(train_state.model.state_dict(), os.path.join(config.checkpoint_path, f"step_{train_state.step}"))
+
+
+def save_full_state(config: PretrainConfig, train_state: TrainState, ema_helper: Optional[EMAHelper],
+                    regularizer: Optional[ContractionRegularizer], completed_iters: int):
+    """Everything needed to continue training exactly (except the in-flight ACT carry)."""
+    if config.checkpoint_path is None:
+        return
+    state = dict(
+        model=train_state.model.state_dict(),
+        optimizers=[optim.state_dict() for optim in train_state.optimizers],
+        ema=ema_helper.state_dict() if ema_helper is not None else None,
+        regularizer=regularizer.state_dict() if regularizer is not None else None,
+        step=train_state.step,
+        completed_iters=completed_iters,
+        torch_rng=torch.get_rng_state(),
+        cuda_rng=torch.cuda.get_rng_state(),
+    )
+    path = os.path.join(config.checkpoint_path, "last_state.pt")
+    torch.save(state, path + ".tmp")
+    os.replace(path + ".tmp", path)
+
+
+def load_full_state(config: PretrainConfig, train_state: TrainState, ema_helper: Optional[EMAHelper],
+                    regularizer: Optional[ContractionRegularizer]) -> int:
+    """Returns the number of completed train iterations (0 if nothing to resume)."""
+    path = os.path.join(config.checkpoint_path, "last_state.pt") if config.checkpoint_path is not None else None
+    if not (config.resume and path is not None and os.path.exists(path)):
+        return 0
+    print(f"Resuming from {path}")
+    state = torch.load(path, map_location="cuda", weights_only=False)
+    train_state.model.load_state_dict(state["model"])
+    for optim, optim_state in zip(train_state.optimizers, state["optimizers"]):
+        optim.load_state_dict(optim_state)
+    if ema_helper is not None and state["ema"] is not None:
+        ema_helper.load_state_dict(state["ema"])
+    if regularizer is not None and state["regularizer"] is not None:
+        regularizer.load_state_dict(state["regularizer"])
+    train_state.step = state["step"]
+    torch.set_rng_state(state["torch_rng"].cpu())
+    torch.cuda.set_rng_state(state["cuda_rng"].cpu())
+    return state["completed_iters"]
 
 
 def load_checkpoint(model: nn.Module, config: PretrainConfig):
@@ -286,7 +344,8 @@ def create_evaluators(config: PretrainConfig, eval_metadata: PuzzleDatasetMetada
 
     return evaluators
 
-def train_batch(config: PretrainConfig, train_state: TrainState, batch: Any, global_batch_size: int, rank: int, world_size: int):
+def train_batch(config: PretrainConfig, train_state: TrainState, batch: Any, global_batch_size: int, rank: int, world_size: int,
+                regularizer: Optional[ContractionRegularizer] = None):
     train_state.step += 1
     if train_state.step > train_state.total_steps:  # At most train_total_steps
         return
@@ -299,10 +358,34 @@ def train_batch(config: PretrainConfig, train_state: TrainState, batch: Any, glo
         with torch.device("cuda"):
             train_state.carry = train_state.model.initial_carry(batch)  # type: ignore
 
-    # Forward
-    train_state.carry, loss, metrics, _, _ = train_state.model(carry=train_state.carry, batch=batch, return_keys=[])
+    # Contraction regularizer on the anchors stashed at the previous step (backward now: peak memory = max, not sum)
+    reg_metrics = {}
+    reg_grads = None
+    if regularizer is not None:
+        reg_loss, reg_metrics = regularizer(train_state.step)
+        if reg_loss is not None:
+            reg_loss.backward()
+            if train_state.step % config.log_every == 0:  # effective weighting: ||g_reg|| vs ||g_main||
+                reg_grads = [p.grad.detach().clone() if p.grad is not None else None for p in train_state.model.parameters()]
 
-    ((1 / global_batch_size) * loss).backward()
+    # Forward
+    train_state.carry, loss, metrics, outputs, _ = train_state.model(carry=train_state.carry, batch=batch, return_keys=[])
+    if regularizer is not None and "reg_s_H" in outputs:
+        regularizer.stash(outputs, train_state.carry.steps, train_state.step)
+    del outputs
+
+    total_loss = (1 / global_batch_size) * loss
+    total_loss.backward()
+    if reg_grads is not None:
+        with torch.no_grad():
+            g_reg2 = g_main2 = 0.0
+            for p, g_reg in zip(train_state.model.parameters(), reg_grads):
+                if g_reg is not None and p.grad is not None:
+                    g_reg2 += g_reg.float().square().sum()
+                    g_main2 += (p.grad - g_reg).float().square().sum()
+            reg_metrics["reg/grad_norm_reg"] = float(torch.as_tensor(g_reg2).sqrt())
+            reg_metrics["reg/grad_norm_main"] = float(torch.as_tensor(g_main2).sqrt())
+        del reg_grads
 
     # Allreduce
     if world_size > 1:
@@ -340,6 +423,7 @@ def train_batch(config: PretrainConfig, train_state: TrainState, batch: Any, glo
             reduced_metrics = {f"train/{k}": v / (global_batch_size if k.endswith("loss") else count) for k, v in reduced_metrics.items()}
 
             reduced_metrics["train/lr"] = lr_this_step
+            reduced_metrics.update(reg_metrics)
             return reduced_metrics
 
 def evaluate(
@@ -486,7 +570,7 @@ def evaluate(
     return reduced_metrics
 
 def save_code_and_config(config: PretrainConfig):
-    if config.checkpoint_path is None or wandb.run is None:
+    if config.checkpoint_path is None:
         return
 
     os.makedirs(config.checkpoint_path, exist_ok=True)
@@ -494,7 +578,8 @@ def save_code_and_config(config: PretrainConfig):
     # Copy code
     code_list = [
         get_model_source_path(config.arch.name),
-        get_model_source_path(config.arch.loss.name)
+        get_model_source_path(config.arch.loss.name),
+        get_model_source_path("regularizers@ContractionRegularizer"),
     ]
     for code_file in code_list:
         if code_file is not None:
@@ -508,7 +593,47 @@ def save_code_and_config(config: PretrainConfig):
         yaml.dump(config.model_dump(), f)
 
     # Log code
-    wandb.run.log_code(config.checkpoint_path)
+    if wandb.run is not None:
+        try:
+            wandb.run.log_code(config.checkpoint_path)
+        except Exception as e:
+            print(f"[wandb] log_code failed: {e}")
+
+
+def _wandb_settings():
+    # `_disable_stats` was renamed `x_disable_stats` in recent wandb versions
+    for kwargs in ({"x_disable_stats": True}, {"_disable_stats": True}):
+        try:
+            return wandb.Settings(**kwargs)
+        except Exception:
+            pass
+    return None
+
+
+class JsonlLogger:
+    def __init__(self, path: str):
+        self.file = open(path, "a", buffering=1)
+
+    def log(self, record: dict):
+        self.file.write(json.dumps(_to_py(record)) + "\n")
+
+
+def _to_py(v):
+    if isinstance(v, dict):
+        return {k: _to_py(x) for k, x in v.items()}
+    if isinstance(v, (np.generic, np.ndarray)) or torch.is_tensor(v):
+        return v.item()
+    return v
+
+
+def _flatten(d: dict, prefix: str = ""):
+    out = {}
+    for k, v in d.items():
+        if isinstance(v, dict):
+            out.update(_flatten(v, f"{prefix}{k}/"))
+        else:
+            out[f"{prefix}{k}"] = v
+    return out
 
 
 def load_synced_config(hydra_config: DictConfig, rank: int, world_size: int) -> PretrainConfig:
@@ -579,41 +704,99 @@ def launch(hydra_config: DictConfig):
         print("No evaluator found")
         evaluators = []
 
+    assert config.eval_interval is None or eval_loader is not None, "Eval data missing (upstream silently swallows this)"
+
     # Train state
     train_state = init_train_state(config, train_metadata, rank=RANK, world_size=WORLD_SIZE)
+
+    # Contraction regularizer / monitor (only for models exporting regularizer anchors)
+    regularizer = None
+    inner = getattr(train_state.model, "_orig_mod", train_state.model).model.inner
+    if hasattr(inner, "cycle"):
+        reg_config = RegConfig.from_arch_extra(config.arch.__pydantic_extra__)  # type: ignore
+        regularizer = ContractionRegularizer(reg_config, inner, batch_size=config.global_batch_size // WORLD_SIZE,
+                                             seed=config.seed + RANK)
+        print(f"Regularizer: {reg_config.model_dump()}  (k={regularizer.k}, rho={regularizer.rho:.4f}, mu={regularizer.mu:.4f})")
 
     # Progress bar and logger
     progress_bar = None
     ema_helper = None
-    if RANK == 0:
-        progress_bar = tqdm.tqdm(total=train_state.total_steps)
-        wandb.init(project=config.project_name, name=config.run_name, config=config.model_dump(), settings=wandb.Settings(_disable_stats=True))  # type: ignore
-        wandb.log({"num_params": sum(x.numel() for x in train_state.model.parameters())}, step=0)
-        save_code_and_config(config)
+    jsonl = None
     if config.ema:
         print('Setup EMA')
         ema_helper = EMAHelper(mu=config.ema_rate)
         ema_helper.register(train_state.model)
 
+    # Resume
+    start_iter = load_full_state(config, train_state, ema_helper, regularizer)
+    train_loader.dataset._iters = start_iter  # type: ignore  # continue the data order (Philox(seed + iters))
+
+    if RANK == 0:
+        progress_bar = tqdm.tqdm(total=train_state.total_steps, initial=train_state.step)
+        os.makedirs(config.checkpoint_path, exist_ok=True)  # type: ignore
+        wandb.init(project=config.project_name, name=config.run_name, config=config.model_dump(),
+                   mode=os.environ.get("WANDB_MODE", "offline"), dir=config.checkpoint_path, settings=_wandb_settings())  # type: ignore
+        num_params = sum(x.numel() for x in train_state.model.parameters())
+        wandb.log({"num_params": num_params}, step=train_state.step)
+        save_code_and_config(config)
+        jsonl = JsonlLogger(os.path.join(config.checkpoint_path, "metrics.jsonl"))  # type: ignore
+        jsonl.log({"split": "meta", "step": train_state.step, "resumed_from_iter": start_iter, "num_params": num_params,
+                   "total_steps": train_state.total_steps, "total_iters": total_iters})
+
     # Training Loop
-    for _iter_id in range(total_iters):
+    batches_per_iter = int(train_epochs_per_iter * train_metadata.total_groups * train_metadata.mean_puzzle_examples) // config.global_batch_size
+    t_start = time.perf_counter()
+    train_seconds = eval_seconds = 0.0
+    window, window_n, t_window, step_window = {}, 0, time.perf_counter(), train_state.step
+    last_eval = None
+    done = False
+    for _iter_id in range(start_iter, total_iters):
         print (f"[Rank {RANK}, World Size {WORLD_SIZE}]: Epoch {_iter_id * train_epochs_per_iter}")
 
         ############ Train Iter
         if RANK == 0:
             print("TRAIN")
         train_state.model.train()
+        t_iter = time.perf_counter()
+        n_batches_iter = 0
         for set_name, batch, global_batch_size in train_loader:
-            metrics = train_batch(config, train_state, batch, global_batch_size, rank=RANK, world_size=WORLD_SIZE)
+            n_batches_iter += 1
+            metrics = train_batch(config, train_state, batch, global_batch_size, rank=RANK, world_size=WORLD_SIZE, regularizer=regularizer)
 
             if RANK == 0 and metrics is not None:
                 wandb.log(metrics, step=train_state.step)
                 progress_bar.update(train_state.step - progress_bar.n)  # type: ignore
+
+                for k, v in metrics.items():
+                    if v is not None and math.isfinite(float(v)):
+                        window[k] = window.get(k, 0.0) + float(v)
+                        window[k + "#n"] = window.get(k + "#n", 0) + 1
+                window_n += 1
+                if config.abort_on_nan and not math.isfinite(float(metrics["train/lm_loss"])):
+                    raise FloatingPointError(f"Non-finite lm_loss at step {train_state.step}")
+                if train_state.step % config.log_every == 0:
+                    now = time.perf_counter()
+                    record = {k: v / window[k + "#n"] for k, v in window.items() if not k.endswith("#n")}
+                    record.update(split="train", step=train_state.step, wall_s=now - t_start,
+                                  steps_per_s=(train_state.step - step_window) / (now - t_window),
+                                  mem_alloc_peak_gb=torch.cuda.max_memory_allocated() / 2**30,
+                                  mem_reserved_peak_gb=torch.cuda.max_memory_reserved() / 2**30)
+                    jsonl.log(record)  # type: ignore
+                    window, window_n, t_window, step_window = {}, 0, now, train_state.step
             if config.ema:
                 ema_helper.update(train_state.model)
 
-        if _iter_id >= config.min_eval_interval:
+            if train_state.step >= train_state.total_steps:
+                done = True
+                break
+        # A stop at total_steps before the loader is exhausted (max_train_steps) leaves the iteration incomplete
+        iter_complete = (not done) or n_batches_iter >= batches_per_iter
+        train_seconds += time.perf_counter() - t_iter
+        is_last = done or (_iter_id == total_iters - 1)
+
+        if _iter_id >= config.min_eval_interval or is_last:
             ############ Evaluation
+            t_eval = time.perf_counter()
             if RANK == 0:
                 print("EVALUATE")
             if config.ema:
@@ -631,18 +814,47 @@ def launch(hydra_config: DictConfig):
                 rank=RANK, 
                 world_size=WORLD_SIZE,
                 cpu_group=CPU_PROCESS_GROUP)
+            eval_dt = time.perf_counter() - t_eval
+            eval_seconds += eval_dt
 
             if RANK == 0 and metrics is not None:
                 wandb.log(metrics, step=train_state.step)
+                last_eval = _flatten(_to_py(metrics))
+                jsonl.log({"split": "eval", "step": train_state.step, "iter": _iter_id + 1, "eval_s": eval_dt, **last_eval})  # type: ignore
+                print({k: round(float(v), 4) for k, v in last_eval.items()})
                 
             ############ Checkpointing
             if RANK == 0:
                 print("SAVE CHECKPOINT")
-            if RANK == 0 and (config.checkpoint_every_eval or (_iter_id == total_iters - 1)):
+            if RANK == 0 and (config.checkpoint_every_eval or is_last):
                 save_train_state(config, train_state_eval)
 
             if config.ema:
                 del train_state_eval
+
+        if RANK == 0:
+            # A max_train_steps stop mid-iteration does not count the iteration as completed
+            save_full_state(config, train_state, ema_helper, regularizer, completed_iters=_iter_id + (1 if iter_complete else 0))
+            if is_last and config.save_raw_final:
+                torch.save(train_state.model.state_dict(), os.path.join(config.checkpoint_path, f"step_{train_state.step}_raw"))  # type: ignore
+        if done:
+            break
+
+    # Summary
+    if RANK == 0:
+        commit = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+        summary = dict(
+            run_name=config.run_name, final_step=train_state.step, total_steps=train_state.total_steps,
+            wall_s=time.perf_counter() - t_start, train_s=train_seconds, eval_s=eval_seconds,
+            peak_mem_alloc_gb=torch.cuda.max_memory_allocated() / 2**30,
+            peak_mem_reserved_gb=torch.cuda.max_memory_reserved() / 2**30,
+            num_params=sum(x.numel() for x in train_state.model.parameters()),
+            final_eval=last_eval,
+            final_ckpt=os.path.join(config.checkpoint_path, f"step_{train_state.step}"),  # type: ignore
+            git_commit=commit, torch=torch.__version__, gpu=torch.cuda.get_device_name(),
+        )
+        with open(os.path.join(config.checkpoint_path, "summary.json"), "w") as f:  # type: ignore
+            json.dump(_to_py(summary), f, indent=2)
 
     # finalize
     if dist.is_initialized():
