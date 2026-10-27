@@ -1,0 +1,24 @@
+{
+  "run_name": "A2_s1",
+  "final_step": 35000,
+  "total_steps": 35000,
+  "wall_s": 11908.77338952801,
+  "train_s": 11028.385234086978,
+  "eval_s": 879.7756228549988,
+  "peak_mem_alloc_gb": 10.008188247680664,
+  "peak_mem_reserved_gb": 10.390625,
+  "num_params": 5062146,
+  "final_eval": {
+    "all/accuracy": 0.8723074197769165,
+    "all/exact_accuracy": 0.6470000147819519,
+    "all/fpres": 0.3115096092224121,
+    "all/lm_loss": 0.29990142583847046,
+    "all/q_halt_accuracy": 0.9997000098228455,
+    "all/q_halt_loss": 0.29585638642311096,
+    "all/steps": 16.0
+  },
+  "final_ckpt": "checkpoints/sudoku-contractive/A2_s1/step_35000",
+  "git_commit": "cfb15be4ff95bcd978fce3bd068abeb58a3c2460",
+  "torch": "2.14.1+cu130",
+  "gpu": "NVIDIA GeForce RTX 5080"
+}

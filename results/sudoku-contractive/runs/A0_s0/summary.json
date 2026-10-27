@@ -1,0 +1,24 @@
+{
+  "run_name": "A0_s0",
+  "final_step": 45000,
+  "total_steps": 45000,
+  "wall_s": 27391.853928127995,
+  "train_s": 25315.095602085086,
+  "eval_s": 2076.0954628549516,
+  "peak_mem_alloc_gb": 9.937133312225342,
+  "peak_mem_reserved_gb": 10.37109375,
+  "num_params": 5028866,
+  "final_eval": {
+    "all/accuracy": 0.8881531953811646,
+    "all/exact_accuracy": 0.6850000023841858,
+    "all/fpres": 0.09167368710041046,
+    "all/lm_loss": 0.2563476860523224,
+    "all/q_halt_accuracy": 0.9998999834060669,
+    "all/q_halt_loss": 0.001410523778758943,
+    "all/steps": 16.0
+  },
+  "final_ckpt": "checkpoints/sudoku-contractive/A0_s0/step_45000",
+  "git_commit": "c01103738605ba39d1430519b1ee0c62f4c707f8",
+  "torch": "2.14.1+cu130",
+  "gpu": "NVIDIA GeForce RTX 4090 Laptop GPU"
+}
