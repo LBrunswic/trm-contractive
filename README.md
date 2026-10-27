@@ -1,171 +1,377 @@
-**Update: Due to many automatically generated and irrelevant issues submitted to this repo (that have been deleted now) and our limited capacity to properly maintain this repo, we have to temporaliy archive (make read-only) this and several other repos.**
+# Contraction-type regularizers for Tiny Recursive Models on Sudoku-Extreme
 
+This repository trains Tiny Recursive Models (TRM) on Sudoku-Extreme with penalties that push the recursive
+latent update towards a contraction, and measures what they do. Eleven arms are compared under one reduced
+training budget: plain TRM, a Lipschitz cap on TRM's cycle map at four strengths, a damped "Euler-TRM"
+reparameterisation alone and combined with a monotone (one-sided Lipschitz) vector-field penalty, and two
+penalties that only constrain the part of the state the answer decoder reads. Every arm except A5 (see *Missing
+evaluations*) is evaluated for accuracy, fixed-point residuals, Jacobian-based contraction measures, accuracy from
+many random starting states, and residual-based stopping. Every Lipschitz cap that binds lowers accuracy. The damped
+Euler update alone gains 2.98 ± 2.30 points over TRM at the same 35k steps (A0@T) on three paired seeds, which is not
+significant at n = 3, and stays 2.23 points below TRM trained for 45k steps. The monotone penalty on Euler-TRM costs
+4.85 ± 4.65 points against Euler-TRM from the standard start (10.16 on one seed), which puts it below TRM at equal
+steps (61.93 vs 63.80 on the 100k subset). In exchange, from fully random starts, all 16 starting states (one
+canonical and 15 random) return the same board for 56.70 ± 6.88% of puzzles. In the other arms that learned the task,
+the arm means are at most 10.47% (one A0@T seed reaches 29.80%). From starts close to the canonical one, the gap is
+much smaller (see *Random starts*).
 
-# Less is More: Recursive Reasoning with Tiny Networks
+## Credit
 
-This is the codebase for the paper: "Less is More: Recursive Reasoning with Tiny Networks". TRM is a recursive reasoning approach that achieves amazing scores of 45% on ARC-AGI-1 and 8% on ARC-AGI-2 using a tiny 7M parameters neural network.
+The code builds on the official TRM implementation,
+[SamsungSAILMontreal/TinyRecursiveModels](https://github.com/SamsungSAILMontreal/TinyRecursiveModels)
+(MIT license, Copyright (c) 2025 Samsung Electronics Co., Ltd.), at upstream commit `c011037`. The git
+history keeps the upstream commits unchanged; the work described here sits in the commits on top of them.
+TRM is described in
 
-[Paper](https://arxiv.org/abs/2510.04871)
+* Alexia Jolicoeur-Martineau, *Less is More: Recursive Reasoning with Tiny Networks*, 2025,
+  [arXiv:2510.04871](https://arxiv.org/abs/2510.04871),
 
-### Motivation
+which builds on the Hierarchical Reasoning Model (HRM, [arXiv:2506.21734](https://arxiv.org/abs/2506.21734)).
+Upstream TRM's code is in turn based on the [HRM code](https://github.com/sapientinc/HRM) and the
+[HRM analysis code](https://github.com/arcprize/hierarchical-reasoning-model-analysis) of the ARC Prize.
+The upstream README, including its ARC-AGI and Maze-Hard instructions, is kept in
+[docs/UPSTREAM_README.md](docs/UPSTREAM_README.md).
 
-Tiny Recursion Model (TRM) is a recursive reasoning model that achieves amazing scores of 45% on ARC-AGI-1 and 8% on ARC-AGI-2 with a tiny 7M parameters neural network. The idea that one must rely on massive foundational models trained for millions of dollars by some big corporation in order to achieve success on hard tasks is a trap. Currently, there is too much focus on exploiting LLMs rather than devising and expanding new lines of direction. With recursive reasoning, it turns out that “less is more”: you don’t always need to crank up model size in order for a model to reason and solve hard problems. A tiny model pretrained from scratch, recursing on itself and updating its answers over time, can achieve a lot without breaking the bank.
+Upstream model and config files are unchanged, except that `models/losses.py` gains code that only runs for the new
+model; the new model, flags and regularizers are opt-in. Some defaults of shared scripts did change. `pretrain.py` now logs to wandb in offline mode, resumes automatically from
+`<checkpoint_path>/last_state.pt`, aborts on a NaN loss, also saves the raw (non-EMA) final weights, writes
+`metrics.jsonl` and `summary.json`, and stops if evaluation is configured but its data is missing.
+`dataset/build_sudoku_dataset.py` seeds NumPy with 0 by default, whereas upstream was unseeded.
 
-This work came to be after I learned about the recent innovative Hierarchical Reasoning Model (HRM). I was amazed that an approach using small models could do so well on hard tasks like the ARC-AGI competition (reaching 40% accuracy when normally only Large Language Models could compete). But I kept thinking that it is too complicated, relying too much on biological arguments about the human brain, and that this recursive reasoning process could be greatly simplified and improved. Tiny Recursion Model (TRM) simplifies recursive reasoning to its core essence, which ultimately has nothing to do with the human brain, does not require any mathematical (fixed-point) theorem, nor any hierarchy.
+## The idea
 
-### How TRM works
+**Fixed-point view.** TRM keeps a latent state `s = (z_H, z_L)`. One *cycle* `Φ` updates `z_L` six times and
+then `z_H` once; one ACT step `Ψ` applies three cycles. At evaluation, the answer is decoded from `z_H` after 16
+ACT steps; in training, upstream's learned (Q-learning) halting gives each puzzle up to 16 deeply supervised ACT
+steps. Inference can be read as an iteration of `Ψ` towards a fixed point, from which
+the answer is decoded. If `Φ` were a
+contraction, that fixed point would be unique, would not depend on the starting state, and iteration would
+reach it geometrically. The question tested here is whether imposing contraction-type properties during
+training, as soft penalties, helps accuracy, and what it changes in convergence and in dependence on the
+starting state.
 
-<p align="center">
-  <img src="https://AlexiaJM.github.io/assets/images/TRM_fig.png" alt="TRM"  style="width: 30%;">
-</p>
+**V1: Lipschitz cap on the cycle map.** Penalise `ReLU(log(‖Φ(s) − Φ(s′)‖ / ‖s − s′‖) − log ρ)` with
+`ρ = 1 − η = 0.95` (A1), 1 (A5), 2 (A6) or 4 (A7). Norms are joint Euclidean norms over the whole state, in fp32.
 
-Tiny Recursion Model (TRM) recursively improves its predicted answer y with a tiny network. It starts with the embedded input question x and initial embedded answer y and latent z. For up to K improvements steps, it tries to improve its answer y. It does so by i) recursively updating n times its latent z given the question x, current answer y, and current latent z (recursive reasoning), and then ii) updating its answer y given the current answer y and current latent z. This recursive process allows the model to progressively improve its answer (potentially addressing any errors from its previous answer) in an extremely parameter-efficient manner while minimizing overfitting.
+**V2: Euler-TRM with a monotone field.** Euler-TRM replaces each update `z ← F(z, ·)` by
+`z ← z + h·(F(z, · + τ(t)) − z)` with step `h = 0.5` and a sinusoidal time embedding `τ`. This is an explicit Euler
+step of `dz/dt = F(z) − z`; `h = 1` with `τ = 0` recovers TRM exactly (tested). V2 penalises
+`ReLU(⟨V(s) − V(s′), s − s′⟩ / ‖s − s′‖² + μ)` for the joint vector field
+`V(s) = (F(z_H, z_L + τ_H) − z_H, F(z_L, z_H + x + τ_L) − z_L)`. A one-sided Lipschitz constant `≤ −μ` makes
+trajectories of the continuous flow approach each other at rate `μ`. Here `μ = −ln(1 − η)/h ≈ 0.103`.
 
-### Requirements
+**Decoder-aware penalties.** Two different starting states only need to agree on what the decoder reads, not on
+the whole latent. Let `P` project the state onto the decoder-visible subspace: the answer tokens of `z_H`
+projected on the centred row space of the output head, with `z_L` mapped to 0. D2 (A9) asks that the decoded part
+of the next state be 1-Lipschitz in the full state, `‖P(Φ(s) − Φ(s′))‖ ≤ ‖s − s′‖`. Dγ (A8, A10) is a
+semi-contraction onto the decoder fibres with leak tolerance γ:
+`‖P(Φ(s) − Φ(s′))‖ ≤ ρ·sqrt(‖PΔ‖² + γ²‖(I − P)Δ‖²)` with `Δ = s − s′`, `ρ = 0.95` and `γ = 0.3`.
 
-Installation should take a few minutes. For the smallest experiments on Sudoku-Extreme (pretrain_mlp_t_sudoku), you need 1 GPU with enough memory. With 1 L40S (48Gb Ram), it takes around 18h to finish. In case that you run into issues due to library versions, here is the requirements with the exact versions used: [specific_requirements.txt](https://github.com/SamsungSAILMontreal/TinyRecursiveModels/blob/main/specific_requirements.txt).
+**How the penalties are applied.** At each training step, a fraction `reg_frac` of the batch rows is regularized
+(0.25 by default, 0.125 for the Dγ arms A8 and A10). Their pairs `s′ = s + δ` are adversarial: `δ` comes from one
+(V1, D2, Dγ) or three (V2, after one step that estimates the gain of `F`) power-iteration steps per training step
+that maximise the constrained quotient, warm-started per puzzle across ACT steps. The radius is log-uniform in
+5–20% of `‖s‖`. For Dγ it is 5–20% of `‖W_γ s‖` in the metric `W_γ = P + γ(I − P)`, and the state perturbation is
+`W_γ⁻¹(r·d)`, up to 1/γ larger in the directions the decoder does not read.
+The penalty weight λ follows dual ascent towards a 10% violation rate and is frozen during learning-rate warmup.
+The regularizer runs outside the compiled training graph, on detached anchor states, with its own random number
+generator. The main training path therefore consumes the same randomness in every arm, and arms that share a seed
+are paired: same initialisation and same data order. All arms, including A0, log the V1/V2 monitors during training
+(`mon/v1_*`, `mon/v2_*`, `mon/fpres`); the decoder-subspace monitors (`mon/dec_*`) exist only for A4 and A6–A10,
+which ran on later code. The details are in the docstring of [models/regularizers.py](models/regularizers.py).
 
-- Python 3.10 (or similar)
-- Cuda 12.6.0 (or similar)
+## Arms
+
+| Arm | Model | Constraint | Seeds | Overrides in `scripts/run_benchmark.sh` |
+|---|---|---|---|---|
+| A0 | TRM | none (monitoring only), 45k steps; **A0@T** is its 35k-step checkpoint | 0, 1, 2 | – |
+| A1 | TRM | V1, Lip(Φ) ≤ 0.95 | 0, 1, 2 | `arch.reg_mode=cycle_lip arch.reg_eta=0.05` |
+| A2 | Euler-TRM, h = 0.5 | none | 0, 1, 2 | `arch.flow=True` |
+| A3 | Euler-TRM, h = 0.5 | V2, monotone field, μ ≈ 0.103 | 0, 1, 2 | `arch.flow=True arch.reg_mode=flow_mono arch.reg_eta=0.05` |
+| A4 | Euler-TRM | V1, Lip(Φ) ≤ 0.95 | 0 | `arch.flow=True arch.reg_mode=cycle_lip arch.reg_eta=0.05` |
+| A5 | TRM | V1, Lip(Φ) ≤ 1 | 0 | `arch.reg_mode=cycle_lip arch.reg_eta=0.0` |
+| A6 | TRM | V1, Lip(Φ) ≤ 2 | 0 | `arch.reg_mode=cycle_lip ++arch.reg_rho=2.0` |
+| A7 | TRM | V1, Lip(Φ) ≤ 4 | 0 | `arch.reg_mode=cycle_lip ++arch.reg_rho=4.0` |
+| A8 | TRM | Dγ, ρ = 0.95, γ = 0.3 | 0 | `arch.reg_mode=dec_semi ++arch.reg_rho=0.95 ++arch.reg_gamma=0.3 arch.reg_frac=0.125` |
+| A9 | TRM | D2, decoded output 1-Lipschitz | 0 | `arch.reg_mode=dec_out ++arch.reg_rho=1.0` |
+| A10 | Euler-TRM | Dγ, ρ = 0.95, γ = 0.3 | 0 | `arch.flow=True arch.reg_mode=dec_semi ++arch.reg_rho=0.95 ++arch.reg_gamma=0.3 arch.reg_frac=0.125` |
+
+Common setup for every arm: the TRM-MLP Sudoku recipe from the upstream README (about 5.0M parameters), with batch
+256 instead of 768; constant learning rate 1e-4 after 2,000 warmup steps and EMA 0.999, as upstream; up to 16 ACT
+steps in training (learned halting, as upstream), while the standard evaluation runs exactly 16; 35k optimizer steps.
+`config/cfg_sudoku_bench.yaml` holds these settings (batch 256, 8,960 epochs = 35k steps, evaluation every 1,280
+epochs = 5k steps). A0 continues to 45k steps as an approximately compute-matched control, since the penalised arms
+spend extra forward and backward passes on the regularizer. On the same GPU and seed, V1 trains at about 0.68× and
+V2 at about 0.78× TRM's throughput, so 35k penalised steps cost roughly 51k (V1) and 45k (V2) TRM steps: the match
+is close for V2, and V1 gets somewhat more compute than A0. Throughput also varies by up to 1.6× between runs on
+the same GPU model, so the match cannot be made exact. With a constant learning rate, A0@T is A0's checkpoint at the
+same 35k steps as the other arms.
+
+## Main results
+
+Exact accuracy (whole board correct) after 16 ACT steps, in %. The full test set has 422,786 puzzles and was
+evaluated for seed 0. The fixed 100k-puzzle subset (standard error ≈ 0.15 pp) was evaluated for every seed. The
+three-seed arms show mean ± sample std. The last column runs inference for 64 ACT steps on a 25k subset (models
+are trained with up to 16).
+Source: [results/sudoku-contractive/report/benchmark.md](results/sudoku-contractive/report/benchmark.md) and the
+per-run `eval_full.json`, `eval_100k.json` and `eval_ext64.json` files.
+
+| Arm | Exact@16, full test (seed 0) | Exact@16, 100k subset | per seed (s0, s1, s2) | Exact@64, 25k subset |
+|---|---|---|---|---|
+| A0@T TRM, 35k | 64.20 | 63.80 ± 1.01 | 64.36, 64.41, 62.63 | 68.77 ± 0.55 |
+| A0 TRM, 45k | 68.98 | 69.01 ± 0.98 | 69.15, 69.91, 67.96 | 75.07 ± 0.60 |
+| A1 TRM + V1 (≤ 0.95) | 10.61 | 10.24 ± 0.23 | 10.49, 10.20, 10.03 | 11.28 ± 0.28 |
+| A5 TRM + V1 (≤ 1) | 10.32 | – (not evaluated) | – | – (not evaluated) |
+| A6 TRM + V1 (≤ 2) | 27.89 | 27.90 | 27.90 | 28.60 |
+| A7 TRM + V1 (≤ 4) | 55.66 | 55.60 | 55.60 | 58.34 |
+| A8 TRM + Dγ | 54.34 | 54.56 | 54.56 | 55.80 |
+| A9 TRM + D2 | 53.13 | 53.18 | 53.18 | 54.58 |
+| A2 Euler-TRM | 66.65 | 66.78 ± 1.35 | 66.72, 65.46, 68.16 | 72.62 ± 2.47 |
+| A3 Euler-TRM + V2 | 65.08 | 61.93 ± 3.65 | 65.20, 62.58, 58.00 | 68.66 ± 5.05 |
+| A4 Euler-TRM + V1 (≤ 0.95) | 51.21 | 51.35 | 51.35 | 55.46 |
+| A10 Euler-TRM + Dγ | 50.72 | 50.82 | 50.82 | 52.26 |
+
+Paired differences on the same seed (100k subset, exact@16, percentage points; from `benchmark.md`):
+
+| Contrast | per seed | mean ± sd | t (2 dof) |
+|---|---|---|---|
+| V1 on TRM: A1 − A0@T | −53.86, −54.21, −52.60 | −53.56 ± 0.85 | −109.38 |
+| Euler update: A2 − A0@T | +2.36, +1.05, +5.52 | +2.98 ± 2.30 | 2.24 |
+| V2 on Euler-TRM: A3 − A2 | −1.51, −2.88, −10.16 | −4.85 ± 4.65 | −1.81 |
+
+Accuracy falls as the Lipschitz cap tightens from 55.66 (cap 4) to 27.89 (cap 2), and plateaus near 10% for caps
+≤ 1 (10.32 at cap 1, 10.61 at cap 0.95), against 64.20 for TRM at the same step count (full test, seed 0). The two
+decoder-aware penalties, D2 and Dγ (53.13 and 54.34), land between the caps of 2 and 4 and stay about 10 points below
+TRM. On Euler-TRM, V1 and Dγ cost about 15–16 points (A4, A10 vs A2, seed 0: −15.44 and −15.93 on the full test).
+
+![Exact accuracy vs Lipschitz cap](results/sudoku-contractive/report/figs/cap_sweep.png)
+
+## Random starts, answer selection and residual stopping
+
+`scripts/population_eval.py` runs every test puzzle (1,000-puzzle subset) from M = 16 starting states. Member 0 uses
+TRM's canonical initial state; members 1–15 use fully random per-token states (`init rand`) or the canonical state
+plus Gaussian noise of std 0.5 (`init noise:0.5`). The answer is then selected in several ways. *Single* is
+member 0 only, the standard protocol. *Vote* is the majority over the 16 boards. *Min-residual* takes the member
+with the smallest fixed-point residual `‖Ψ(s) − s‖ / ‖s‖`. *Member mean* is the average accuracy of the 16
+members. *Unanimous* is the fraction of puzzles where all 16 members return the same board. Values for init `rand`
+and 64 ACT steps, in %, mean ± sd over seeds where three exist (from `benchmark.md`):
+
+| Arm | single | vote | min-residual | member mean | unanimous |
+|---|---|---|---|---|---|
+| A0@T TRM, 35k | 68.53 ± 1.56 | 74.50 ± 5.44 | 46.83 ± 30.09 | 45.53 ± 24.15 | 10.47 ± 16.76 |
+| A0 TRM, 45k | 74.87 ± 1.18 | 82.37 ± 3.93 | 61.87 ± 7.59 | 57.20 ± 8.34 | 5.30 ± 7.71 |
+| A1 TRM + V1 | 10.83 ± 0.78 | 12.47 ± 0.31 | 3.53 ± 2.77 | 9.78 ± 1.07 | 21.90 ± 18.35 |
+| A2 Euler-TRM | 72.13 ± 2.17 | 76.63 ± 3.06 | 35.50 ± 25.95 | 33.48 ± 19.16 | 0.60 ± 1.04 |
+| **A3 Euler-TRM + V2** | 69.20 ± 4.70 | 77.07 ± 6.76 | **81.00 ± 5.74** | **69.26 ± 6.20** | **56.70 ± 6.88** |
+| A4 Euler-TRM + V1 | 54.20 | 58.50 | 47.50 | 38.46 | 2.20 |
+| A6 TRM + V1 (≤ 2) | 27.20 | 27.10 | 0.00 | 1.77 | 0.00 |
+| A7 TRM + V1 (≤ 4) | 58.10 | 58.10 | 1.10 | 3.66 | 0.00 |
+| A8 TRM + Dγ | 56.10 | 57.30 | 18.40 | 14.81 | 0.00 |
+| A9 TRM + D2 | 55.70 | 57.60 | 31.20 | 30.92 | 0.20 |
+| A10 Euler-TRM + Dγ | 52.70 | 54.50 | 38.20 | 20.97 | 0.10 |
+
+* **Agreement across starts (A3).** From fully random starts, with the V2 penalty, all 16 starts agree on the board
+  for 56.70 ± 6.88% of puzzles (per seed 61.40, 59.90, 48.80). In every other arm with usable accuracy, the arm mean
+  is at most 10.47 ± 16.76% (A0@T; per seed 0.00, 1.60, 29.80). A random start does about as well as the canonical
+  one (member mean 69.26 vs single 69.20). For A2 without the penalty, random starts drop to 33.48 ± 19.16. Starts
+  close to the canonical one (init `noise:0.5`) shrink the gap: unanimity is 57.10 ± 5.89 for A3, 42.40 ± 14.75 for
+  A2 (57.30 on seed 0), 41.80 for A4 and 47.90 for A10 (`benchmark.md`).
+* **Min-residual selection (A3).** Picking the trajectory with the smallest residual reaches 81.00 ± 5.74%
+  (per seed 86.30, 81.80, 74.90), 11.8 points above A3's own canonical start. It uses 16 trajectories, so the
+  comparable baselines are the other 16-trajectory selectors: A2 reaches 79.17 ± 2.32 by vote and 78.50 ± 5.28 by
+  min-residual from noisy starts, and A0 at 45k steps reaches 82.37 ± 3.93 by vote from random starts, above A3.
+  From fully random starts, min-residual selection for TRM and plain Euler-TRM falls below their single canonical
+  run (46.83 ± 30.09 for A0@T, 35.50 ± 25.95 for A2): their random starts often end on wrong boards with a smaller
+  residual than the canonical run. From noisy starts it is above the single run for A2 (78.50 vs 72.13), level for
+  A0 (75.07 vs 74.87) and slightly below for A0@T (67.20 vs 68.53).
+* **Majority vote** helps TRM and Euler-TRM (A0@T 68.53 → 74.50, A2 72.13 → 76.63, A3 69.20 → 77.07), but not
+  the V1-capped arms A6 and A7. For A0, A2 and A3, the vote share is a well-ranked confidence score
+  (AUROC 0.97–1.00; `benchmark.md`).
+* **A1's agreement is not useful.** A1 shows 21.90 ± 18.35% unanimity, but its boards are mostly wrong: about 11% of
+  puzzles are solved.
+
+**Residual-based stopping.** Each trajectory stops at the earliest ACT step where its residual falls below τ, with a
+maximum of 64 steps. With τ = 0.02 and init `noise:0.5`, the single-trajectory accuracy equals the 64-step accuracy
+for A0, A2, A7, A8 and A9. For example, A0@T scores 68.53 ± 1.56 both ways, and its canonical trajectory stops after
+26.83 ± 1.03 ACT steps on average instead of 64 (26.33 ± 1.89 averaged over all 16 members). Under V1 the residual
+is already small after about 3 steps, before the answer is right, and A1's accuracy drops from 10.83 to 2.40 with
+this rule.
+
+![Residual-based stopping](results/sudoku-contractive/report/figs/stopping_time.png)
+
+## Contraction diagnostics
+
+`scripts/fixed_point_diagnostics.py` measures residuals on 1,000 test puzzles and, for 256 of them, the Jacobians of
+the trained operators at the step-16 state, in fp32, by power iteration. None of the penalties makes the cycle map
+`Φ` contractive in the local (Jacobian) sense at those states. The median `σ_max(J_Φ)` is 2.16 ± 0.54 for A1, against
+4.96 ± 0.65 for A0@T. In every evaluated arm, `σ_max(J_Φ)` exceeds the arm's own cap ρ (0.95 for the unpenalised
+arms) on 100% of those puzzles. The ACT-step map `Ψ` behaves differently under V1: for A1, the median `σ_max(J_Ψ)`
+is 0.92 ± 0.01 and `σ_max(J_Ψ)` is below 1 on about 65% of the measured states (34–36% above 1 per seed), whereas
+it exceeds 1 on every measured state in every other arm. The median `λ_max(sym J_V)` for A3 is 2.43 ± 0.10, which
+is positive, whereas V2 targets ≤ −μ. The penalties hold the violation rate on the sampled adversarial secant pairs
+near the 10% target (`viol (end)` in `benchmark.md`). They do not certify a global or local bound. The median spectral radius of the
+ACT-step Jacobian, ρ(J_Ψ), lies between 0.76 and 1.14 across arms (0.87 ± 0.35 for A0@T, 1.01 ± 0.02 for A3).
+All rows are in [`benchmark.md`](results/sudoku-contractive/report/benchmark.md).
+
+More figures: [in-training evaluation](results/sudoku-contractive/report/figs/eval_curves.png),
+[accuracy vs ACT steps](results/sudoku-contractive/report/figs/act_steps.png),
+[fixed-point residual](results/sudoku-contractive/report/figs/residual.png),
+[contraction measures](results/sudoku-contractive/report/figs/contraction.png),
+[training-time monitors](results/sudoku-contractive/report/figs/train_monitor.png). A standalone interactive summary
+(no network access needed) is in
+[results/sudoku-contractive/report/TRM_contraction_benchmark.html](results/sudoku-contractive/report/TRM_contraction_benchmark.html).
+
+## Caveats
+
+* **Reduced budget.** 35k steps at batch 256 is about 18% of the training examples in the upstream Sudoku recipe
+  (50,000 epochs at batch 768, about 65k steps); A0 at 45k steps sees about 23%. Training also uses a seeded
+  1,000-puzzle × 1,000-augmentation subset, because the paper's subset is unknown. Absolute accuracies (64–69% for TRM) are therefore well below the
+  paper's ~87%. The comparisons are between arms trained under identical conditions; whether they hold at full
+  budget is not tested here.
+* **Seeds.** A0–A3 have three seeds (0, 1, 2); A4–A10 have seed 0 only, so their differences carry no seed-variance
+  estimate. With n = 3, the A2 − A0@T and A3 − A2 contrasts are not significant at conventional levels (t = 2.24 and
+  −1.81 on 2 dof); only the V1 effect is unambiguous. A3's seed spread is large (58.00–65.20 on the 100k subset).
+* **A3 versus A2.** The V2 penalty costs canonical-start accuracy: −4.85 ± 4.65 pp on the 100k subset (−10.16 on
+  seed 2), 65.08 vs 66.65 on the full test (seed 0), and A3 is below TRM at equal steps (61.93 vs 63.80 on the 100k
+  subset). The gains above concern agreement across random starts and min-residual selection over 16 trajectories,
+  which cost 16 times the inference compute.
+* **Full test set and raw-weight diagnostics are seed 0 only**, by design (`FULL_TEST_SEEDS=0`). Three-seed
+  statistics use the fixed 100k subset. Population and Jacobian diagnostics use a 1,000-puzzle subset.
+* **Missing evaluations.** Some post-training evaluations were paused and are not in this repository:
+  `A1_s0/diag_raw.json` and `A5_s0/diag_raw.json` (diagnostics of the non-EMA weights), and for A5 (`A5_s0`)
+  `eval_100k.json`, `eval_ext64.json`, `diag.json` and `pop_eval.json`. A5 is reported only through its full-test
+  accuracy and its training metrics, and it is absent from the population tables.
+* **Soft constraints.** All penalties are soft, with violations held near 10% on sampled pairs (see *Contraction
+  diagnostics*). The results describe these regularizers, not exactly contractive operators.
+* **Hardware and code snapshots.** Runs used an RTX 4090 Laptop GPU and RTX 5080 GPUs (bf16), some with resumption
+  from full training-state checkpoints. `summary.json` records the GPU each run finished on. Its `git_commit` field
+  is the repository HEAD when the run finished, which can be later than the code the run loaded, and it refers to
+  the development history of this code, which is not published. `A0_s0` records upstream `c011037` because it was
+  launched from uncommitted changes on top of upstream; that commit is not the code that ran. This repository
+  contains the final state of the code. Code snapshots saved at the start of each run show that the model and loss
+  code are identical to this repository in every run, and that `models/regularizers.py` went through three
+  versions: A0–A3 and A5 used the first, A4, A6, A7 and A9 the second, and A8 and A10 the final one. The method
+  of each arm is unchanged across versions, but the final training-time monitor draws extra random numbers from
+  the regularizer's generator (for the decoder-subspace monitors). A rerun with this code therefore samples
+  different regularizer pairs in the penalised arms other than A8 and A10, and logs different monitor values in
+  A0 and A2. The main training path (model, data order, ACT exploration) is unaffected.
+* `figs/cap_sweep.png` and the HTML summary were made from the same run files with plotting code that is not
+  included. Everything else in `report/` is regenerated by `scripts/summarize.py` (see below).
+
+## Reproducing
+
+**Environment.**
 
 ```bash
-pip install --upgrade pip wheel setuptools
-pip install --pre --upgrade torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu126 # install torch based on your cuda version
-pip install -r requirements.txt # install requirements
-pip install --no-cache-dir --no-build-isolation adam-atan2 
-wandb login YOUR-LOGIN # login if you want the logger to sync results to your Weights & Biases (https://wandb.ai/)
+conda create -n trm-bench python=3.12 && conda activate trm-bench
+pip install torch --index-url https://download.pytorch.org/whl/cu130   # pick the wheel matching your CUDA
+pip install einops tqdm coolname pydantic argdantic wandb omegaconf hydra-core huggingface_hub numba pytest matplotlib
+# Optional: the adam-atan2 CUDA extension. Without it, models/adam_atan2_torch.py (a pure-PyTorch port) is used.
 ```
 
-### Dataset Preparation
+Training logs to wandb in offline mode by default (`WANDB_MODE=offline`), and also writes `metrics.jsonl` and
+`summary.json` to the run directory.
+
+**Data.** `--seed` makes the 1,000-puzzle training subsample and its augmentations reproducible, and
+`--source-revision` pins the revision of the Hugging Face dataset `sapientinc/sudoku-extreme` that the benchmark
+used (without it, the latest revision is downloaded, as upstream). Test subsets are nested
+(test1k ⊂ test10k ⊂ test25k ⊂ test100k). `dataset/sudoku-extreme-s0.sha256` holds the checksums of the arrays the
+benchmark used:
 
 ```bash
-# ARC-AGI-1
-python -m dataset.build_arc_dataset \
-  --input-file-prefix kaggle/combined/arc-agi \
-  --output-dir data/arc1concept-aug-1000 \
-  --subsets training evaluation concept \
-  --test-set-name evaluation
-
-# ARC-AGI-2
-python -m dataset.build_arc_dataset \
-  --input-file-prefix kaggle/combined/arc-agi \
-  --output-dir data/arc2concept-aug-1000 \
-  --subsets training2 evaluation2 concept \
-  --test-set-name evaluation2
-
-## Note: You cannot train on both ARC-AGI-1 and ARC-AGI-2 and evaluate them both because ARC-AGI-2 training data contains some ARC-AGI-1 eval data
-
-# Sudoku-Extreme
-python dataset/build_sudoku_dataset.py --output-dir data/sudoku-extreme-1k-aug-1000  --subsample-size 1000 --num-aug 1000  # 1000 examples, 1000 augments
-
-# Maze-Hard
-python dataset/build_maze_dataset.py # 1000 examples, 8 augments
+python dataset/build_sudoku_dataset.py --output-dir data/sudoku-extreme-1k-aug-1000-s0 \
+    --subsample-size 1000 --num-aug 1000 --seed 0 --source-revision 58942f96baeb572ca3127e2a9e9c70f330783d6b
+for n in 1000 10000 25000 100000; do
+  python dataset/make_test_subset.py --source data/sudoku-extreme-1k-aug-1000-s0 \
+      --output data/sudoku-extreme-test$((n/1000))k --n $n --seed 0
+done
+sha256sum -c dataset/sudoku-extreme-s0.sha256
 ```
 
-## Experiments
-
-### Sudoku-Extreme (assuming 1 L40S GPU):
+**Training and evaluation.** `scripts/run_benchmark.sh` is a resumable queue: rerunning it skips finished work and
+resumes interrupted runs from `last_state.pt`. One iteration is 1,280 epochs, which is 5,000 steps at batch 256.
+Once a run finishes, the queue calls `scripts/post_run.sh` for the final evaluations: `eval_100k.json`,
+`eval_ext64.json`, `diag.json`, `pop_eval.json`, plus `eval_full.json` and `diag_raw.json` for the seeds listed in
+`FULL_TEST_SEEDS`. The script picks the conda env `trm-bench`; set `CONDA_SH` to your `conda.sh` if conda is not on
+`PATH`, or `TRM_CONDA_ENV=none` to use the current Python. The scripts stop with a message if neither works.
 
 ```bash
-run_name="pretrain_mlp_t_sudoku"
-python pretrain.py \
-arch=trm \
-data_paths="[data/sudoku-extreme-1k-aug-1000]" \
-evaluators="[]" \
-epochs=50000 eval_interval=5000 \
-lr=1e-4 puzzle_emb_lr=1e-4 weight_decay=1.0 puzzle_emb_weight_decay=1.0 \
-arch.mlp_t=True arch.pos_encodings=none \
-arch.L_layers=2 \
-arch.H_cycles=3 arch.L_cycles=6 \
-+run_name=${run_name} ema=True
-
-Expected: Around 87% exact-accuracy (+- 2%)
-
-run_name="pretrain_att_sudoku"
-python pretrain.py \
-arch=trm \
-data_paths="[data/sudoku-extreme-1k-aug-1000]" \
-evaluators="[]" \
-epochs=50000 eval_interval=5000 \
-lr=1e-4 puzzle_emb_lr=1e-4 weight_decay=1.0 puzzle_emb_weight_decay=1.0 \
-arch.L_layers=2 \
-arch.H_cycles=3 arch.L_cycles=6 \
-+run_name=${run_name} ema=True
+# A0-A3, three seeds (A0 runs 9 iterations = 45k steps, keeping its 35k checkpoint as A0@T)
+FULL_TEST_SEEDS=0 SEEDS="0 1 2" ARMS="A0 A1 A2 A3" ITERS=7 A0_ITERS=9 scripts/run_benchmark.sh
+# A4-A10, seed 0
+FULL_TEST_SEEDS=0 SEEDS=0 ARMS="A4 A5 A6 A7 A8 A9 A10" ITERS=7 scripts/run_benchmark.sh
+# final evaluations of a single finished run (extra steps get *_step<N>.json files)
+FULL_TEST=1 scripts/post_run.sh checkpoints/sudoku-contractive/A0_s0 35000
 ```
 
-Expected: Around 75% exact-accuracy (+- 2%)
-
-*Runtime:* < 20 hours
-
-### Maze-Hard (assuming 4 L40S GPUs):
+A single run without the queue, e.g. V1 with the settings of `A1_s0` (the config defaults are the benchmark schedule:
+batch 256, 8,960 epochs = 35k steps, evaluation every 1,280 epochs):
 
 ```bash
-run_name="pretrain_att_maze30x30"
-torchrun --nproc-per-node 4 --rdzv_backend=c10d --rdzv_endpoint=localhost:0 --nnodes=1 pretrain.py \
-arch=trm \
-data_paths="[data/maze-30x30-hard-1k]" \
-evaluators="[]" \
-epochs=50000 eval_interval=5000 \
-lr=1e-4 puzzle_emb_lr=1e-4 weight_decay=1.0 puzzle_emb_weight_decay=1.0 \
-arch.L_layers=2 \
-arch.H_cycles=3 arch.L_cycles=4 \
-+run_name=${run_name} ema=True
+python pretrain.py --config-name cfg_sudoku_bench seed=0 arch.reg_mode=cycle_lip arch.reg_eta=0.05 \
+    run_name=A1_s0 checkpoint_path=checkpoints/single/A1_s0
 ```
 
-*Runtime:* < 24 hours
+Use a checkpoint directory outside `checkpoints/sudoku-contractive/`: runs resume from any `last_state.pt` they find,
+and the queue treats that directory as its own.
 
-Actually, you can run Maze-Hard with 1 L40S GPU by reducing the batch-size with no noticable loss in performance:
+**Report.** `scripts/summarize.py` reads only the JSON/JSONL files of each run. Pointing it at the published runs
+regenerates `report/benchmark.md` byte for byte, plus the six figures it references:
 
 ```bash
-run_name="pretrain_att_maze30x30_1gpu"
-python pretrain.py \
-arch=trm \
-data_paths="[data/maze-30x30-hard-1k]" \
-evaluators="[]" \
-epochs=50000 eval_interval=5000 \
-lr=1e-4 puzzle_emb_lr=1e-4 weight_decay=1.0 puzzle_emb_weight_decay=1.0 global_batch_size=128 \
-arch.L_layers=2 \
-arch.H_cycles=3 arch.L_cycles=4 \
-+run_name=${run_name} ema=True
+python scripts/summarize.py --root results/sudoku-contractive/runs --out reports/sudoku-contractive
+# for your own runs: python scripts/summarize.py --root checkpoints/sudoku-contractive --out reports/sudoku-contractive
 ```
 
-*Runtime:* < 24 hours
+## Repository layout
 
+| Path | Contents |
+|---|---|
+| `models/recursive_reasoning/trm_contractive.py` | TRM fork: Euler-TRM flags, operator API (`cycle` = Φ, `field` = V), anchors exported for the regularizer; defaults reproduce TRM |
+| `models/regularizers.py` | V1, V2, D2, Dγ (and D1, visible block only) penalties, adversarial pair search, dual ascent, training-time contraction monitor |
+| `models/adam_atan2_torch.py` | pure-PyTorch port of `adam-atan2` 0.0.3, used when the CUDA extension is unavailable |
+| `pretrain.py`, `models/losses.py` | upstream training loop plus regularizer hook, full resume, JSONL metrics, `summary.json`, fixed-point residual metric |
+| `config/cfg_sudoku_bench.yaml`, `config/arch/trm_contractive.yaml` | the upstream Sudoku MLP-T recipe made explicit at the benchmark schedule, plus the added flags |
+| `dataset/build_sudoku_dataset.py` (`--seed`, `--source-revision`), `dataset/make_test_subset.py`, `dataset/sudoku-extreme-s0.sha256` | reproducible training subset, nested test subsets, checksums of the benchmark data |
+| `scripts/evaluate.py` | checkpoint evaluation with accuracy at every ACT step up to K and Q-halt accuracy |
+| `scripts/fixed_point_diagnostics.py` | residuals, σ_max and spectral radius of J_Ψ and J_Φ, λ_max(sym J_V), decoder-subspace quotients, init robustness |
+| `scripts/population_eval.py` | multi-start populations, voting, min-residual selection, confidence (AUROC, ECE, selective accuracy), residual stopping |
+| `scripts/run_benchmark.sh`, `scripts/post_run.sh`, `scripts/smoke.sh`, `scripts/summarize.py` | run queue, final evaluations, smoke test, report |
+| `tests/` | CPU test suite |
+| `results/sudoku-contractive/report/` | `benchmark.md`, `figs/`, standalone HTML summary |
+| `results/sudoku-contractive/runs/<ARM>_s<seed>/` | per run: `summary.json`, `all_config.yaml` (full resolved config), `metrics.jsonl` (training metrics every 50 steps, in-training eval on test10k every 5,000 steps), `eval_*.json`, `diag*.json`, `pop_eval*.json`; files with `_step35000` are A0's 35k checkpoint (A0@T); `A0_s0/diag_census_step5000*.json` are small early diagnostics of A0's 5k checkpoint (250 and 50 puzzles, earlier version of the diagnostics script), not used in the report |
+| `BENCHMARK.md` | short technical notes on the benchmark |
+| `docs/UPSTREAM_README.md` | the upstream TRM README |
+| `LICENSES/` | third-party license texts (adam-atan2, d3) |
 
-### ARC-AGI-1 (assuming 4 H-100 GPUs):
+Model weights are not included.
+
+## Tests
 
 ```bash
-run_name="pretrain_att_arc1concept_4"
-torchrun --nproc-per-node 4 --rdzv_backend=c10d --rdzv_endpoint=localhost:0 --nnodes=1 pretrain.py \
-arch=trm \
-data_paths="[data/arc1concept-aug-1000]" \
-arch.L_layers=2 \
-arch.H_cycles=3 arch.L_cycles=4 \
-+run_name=${run_name} ema=True
-
+CUDA_VISIBLE_DEVICES="" DISABLE_COMPILE=1 python -m pytest -q tests/
 ```
 
-*Runtime:* ~3 days
+The suite runs on CPU in about a minute. It covers exact equivalence of `trm_contractive` with upstream TRM at
+default flags (and of Euler-TRM at h = 1), the penalties on toy maps with known Lipschitz constants, the optimizer
+port against its reference, the data and training pipeline, and the diagnostics. With the datasets built under
+`data/` (see *Data*), the result is `270 passed, 1 skipped, 4 xfailed`. The skipped test needs a GPU. The four
+strict xfails document two things. One is an upstream bug: `loss_type=softmax_cross_entropy` raises a `TypeError` in
+`ACTLossHead`, for both `trm` and `trm_contractive`; the Sudoku recipe uses stablemax. The other is a known
+limitation of a fallback in the V2 power iteration that the regularizer does not use. Without `data/`, the three
+tests that read the real data are skipped as well: `267 passed, 4 skipped, 4 xfailed`.
 
-### ARC-AGI-2 (assuming 4 H-100 GPUs):
+## License
 
-```bash
-run_name="pretrain_att_arc2concept_4"
-torchrun --nproc-per-node 4 --rdzv_backend=c10d --rdzv_endpoint=localhost:0 --nnodes=1 pretrain.py \
-arch=trm \
-data_paths="[data/arc2concept-aug-1000]" \
-arch.L_layers=2 \
-arch.H_cycles=3 arch.L_cycles=4 \
-+run_name=${run_name} ema=True
+MIT, as upstream. See [LICENSE](LICENSE): the upstream copyright notice of Samsung Electronics Co., Ltd. is kept,
+and the modifications in this repository are Copyright (c) 2026 Leo Brunswic. Third-party components keep their own
+licenses (see [LICENSES/](LICENSES/README.md)): `models/adam_atan2_torch.py` and the reference in
+`tests/test_adam_atan2_torch.py` are derived from [adam-atan2](https://github.com/imoneoi/adam_atan2) 0.0.3
+(Apache License 2.0), and the HTML report inlines [d3](https://d3js.org) v7.9.0 (ISC license).
 
-```
+## Citation
 
-*Runtime:* ~3 days
-
-
-## Reference
-
-If you find our work useful, please consider citing:
+If you use this code, please cite TRM:
 
 ```bibtex
 @misc{jolicoeurmartineau2025morerecursivereasoningtiny,
@@ -179,7 +385,7 @@ If you find our work useful, please consider citing:
 }
 ```
 
-and the Hierarchical Reasoning Model (HRM):
+and the Hierarchical Reasoning Model it builds on:
 
 ```bibtex
 @misc{wang2025hierarchicalreasoningmodel,
@@ -192,5 +398,3 @@ and the Hierarchical Reasoning Model (HRM):
       url={https://arxiv.org/abs/2506.21734}, 
 }
 ```
-
-This code is based on the Hierarchical Reasoning Model [code](https://github.com/sapientinc/HRM) and the Hierarchical Reasoning Model Analysis [code](https://github.com/arcprize/hierarchical-reasoning-model-analysis).
