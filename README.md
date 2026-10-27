@@ -266,6 +266,12 @@ More figures: [in-training evaluation](results/sudoku-contractive/report/figs/ev
 (no network access needed) is in
 [results/sudoku-contractive/report/TRM_contraction_benchmark.html](results/sudoku-contractive/report/TRM_contraction_benchmark.html).
 
+## Planned follow-up
+
+[docs/CVPR_BENCHMARK_PLAN.md](docs/CVPR_BENCHMARK_PLAN.md) proposes the baselines, ablations, test-time protocols,
+tasks and statistics needed to test these results properly, with a compute estimate for every row. None of it has
+been run yet.
+
 ## Caveats
 
 * **Reduced budget.** 35k steps at batch 256 is about 18% of the training examples in the upstream Sudoku recipe
@@ -401,6 +407,7 @@ python scripts/summarize.py --root results/sudoku-contractive/runs --out reports
 | `results/sudoku-contractive/runs/<ARM>_s<seed>/` | per run: `summary.json`, `all_config.yaml` (full resolved config), `metrics.jsonl` (training metrics every 50 steps, in-training eval on test10k every 5,000 steps), `eval_*.json`, `diag*.json`, `pop_eval*.json`; files with `_step35000` are A0's 35k checkpoint (A0@T); `A0_s0/diag_census_step5000*.json` are small early diagnostics of A0's 5k checkpoint (250 and 50 puzzles, earlier version of the diagnostics script), not used in the report |
 | `BENCHMARK.md` | short technical notes on the benchmark |
 | `docs/UPSTREAM_README.md` | the upstream TRM README |
+| `docs/CVPR_BENCHMARK_PLAN.md` | proposed follow-up benchmark (baselines, ablations, protocol, compute estimates); not yet run |
 | `LICENSES/` | third-party license texts (adam-atan2, d3) |
 
 Model weights are not included.
