@@ -64,6 +64,9 @@ comparisons are B1–B3 against X1 (V2 on top of random-init training), evaluate
 
 ### 1.2 What prior work already covers, and what may be claimed
 
+The literature search behind this table is written up in [LITERATURE_REVIEW.md](LITERATURE_REVIEW.md) (72 verified
+papers: 26 synthesised in detail, the other 46 listed).
+
 | Prior work | What it already shows | What this study may claim | Deciding rows | Compute of deciding rows (G-h, Tier 0) |
 |---|---|---|---|---|
 | Equilibrium Reasoners (EqR, 2605.21488); Path Independent Equilibrium Models (PI, 2211.09961); xRRMs: Explorative Recurrent Reasoning Models (NeurIPS 2026 workshop, abstract only) | Random restarts, majority vote and min-residual (Top1Conv) selection on TRM; random-init (RI) and noise-injection (NI) training make the model path-independent (Δ_PI 3.58 → 0.10 on Sudoku-Lite with RI); PI's adversarial init attack. xRRMs trains TRM/HRM from several random initial latents plus learned-variance noise with a best-of-K loss, i.e. training from random starts that keeps trajectories diverse | Only whether a field-level penalty adds invariance beyond RI, in particular on init families outside every arm's training distribution and under attack. The selection rules are EqR's; training from random initial latents is prior art (EqR, PI, xRRMs) | B1, B2, B★, B3, X1, C5, C6 (H1, H5) | 102–181 |
@@ -654,6 +657,33 @@ the validation split; D1 on the family arms; X8 and X10; B4a/B4b; T3, the only p
 | 0 | 59 R-scale runs (23 regularised) + 6 warm restarts | ≈20 GB | ≈7 GB (≈70 checkpoints) | MNIST (≈11 MB); validation pool from the existing CSV | 176–332 (57%) |
 | 1 | 42 R-scale (35 regularised) + 5 L runs + 30 restoration + 6 flow | ≈23 GB | ≈4 GB | restoration sets (< 0.5 GB), optical-flow sets (≈40 GB, unverified) | 103–195 (31%) |
 | 2 | 11 L + 9 extensions + 9 Maze + 4 ARC (plus a 2k-step pilot each for Maze and ARC) + 9 Mini-ARC + 13 others | ≈18–23 GB | ≈3 GB | Maze (few MB), ARC aug-1000 (several GB, unverified) | 119–227 (26%) |
+
+### 8.8 Dollar cost
+
+[COST_ESTIMATE.md](COST_ESTIMATE.md) prices every row of this plan in US dollars at a 27 Oct 2026 snapshot of cloud
+prices, including setup, storage, egress, a failure allowance and VAT where it applies; the scripts that print its
+numbers are in [cost/](cost/). Its recommended package differs from the tiers above mainly in one respect: the
+confirmatory core factorial (A0, A2, A3, B★, B3, X1 × 6 seeds) runs at the paper budget L, which subsumes X18a/b/c.
+It also uses exact@16 instead of EV-S0 at 70k on those runs (a deviation from note [n8]), runs T7, T8, B8 and B10
+only if DP1–DP3 leave the paper alive, and adds an optional +P (seeds 6–8 at L for X1, B3, A3, B★). All Sudoku
+training stays on RTX 5080s (the owned pair plus rented 1-GPU 5080s on Vast.ai verified hosts, about $0.345/h with
+disk), which keeps the pairing rule of §7.2.
+
+| All tiers, core factorial at L | Central | Pessimistic |
+|---|---|---|
+| Recommended package (the owned 5080s and the laptop take part of the work) | $428 | $1,195 |
+| Same, everything rented | $561 | $1,312 |
+| Option +P (seeds 6–8 at L for X1, B3, A3, B★), rented | +$71 | +$162 |
+
+| Rented 4-GPU node | Break-even price against rented 5080s | Market price, 27 Oct 2026 |
+|---|---|---|
+| 4× RTX PRO 6000 | ≤ $2.33 per node-hour ($2.89 if its speed-up over a fast 5080 reaches 2.6) | $5.13–9.96 per node-hour |
+| 4× RTX 6000 Ada | ≤ $1.33 per node-hour | $2.40–3.96 per node-hour |
+
+Per unit of work, a rented 4× RTX PRO 6000 node costs 2.2× (Vast marketplace) to 4.3× (managed on-demand, with VAT)
+as much as rented 5080s. Even the pessimistic all-rented case with +P ($1,474) stays under a $2,000 budget with a 20%
+reserve, so the binding constraints are engineering person-days and the 11 Nov freeze (§8.3), not compute dollars.
+The cost estimate's own spending order, stop/go checkpoints and cut order are in its §6.
 
 ---
 

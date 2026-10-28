@@ -1,0 +1,48 @@
+gpu,provider,offer,tier,usd_per_gpu_hour,s_key,date,source_url
+RTX 5080,Vast.ai,"Vast.ai on-demand, verified 1-GPU (GPU-only dph_base median; +$0.015 for 40 GB disk)",on-demand,0.33,5080,2026-10-27,https://vast.ai/pricing
+RTX 5080,Vast.ai,"Vast.ai interruptible, verified (min-bid median)",interruptible,0.247,5080,2026-10-27,https://vast.ai/pricing
+RTX 5080,RunPod,"RunPod Community (stock ""Low"")",on-demand,0.39,5080,2026-10-27,https://www.runpod.io/pricing
+RTX 4090,Vast.ai,Vast.ai on-demand,on-demand,0.478,4090,2026-10-27,https://vast.ai/pricing
+RTX 4090,Vast.ai,Vast.ai interruptible,interruptible,0.341,4090,2026-10-27,https://vast.ai/pricing
+RTX 4090,RunPod,RunPod Secure,on-demand,0.89,4090,2026-10-27,https://www.runpod.io/pricing
+RTX 5090,Vast.ai,Vast.ai on-demand,on-demand,0.674,5090,2026-10-27,https://vast.ai/pricing
+RTX 5090,Vast.ai,Vast.ai interruptible,interruptible,0.474,5090,2026-10-27,https://vast.ai/pricing
+RTX 5090,RunPod,RunPod Secure,on-demand,1.19,5090,2026-10-27,https://www.runpod.io/pricing
+RTX PRO 6000 SE,Vast.ai,"Vast.ai 4x node, unverified hosts JP/RO ($5.34/node-h)",on-demand,1.334,P6K-SE,2026-10-27,https://vast.ai/pricing
+RTX PRO 6000 WS,Vast.ai,"Vast.ai 4x node, verified host PL, 500 W ($6.23/node-h, single offer)",on-demand,1.558,P6K-WS,2026-10-27,https://vast.ai/pricing
+RTX PRO 6000 SE,Vast.ai,"Vast.ai 4x node, verified host CZ ($9.39/node-h)",on-demand,2.347,P6K-SE,2026-10-27,https://vast.ai/pricing
+RTX PRO 6000 SE,Vast.ai,Vast.ai 1x on-demand median (verified $1.736),on-demand,1.601,P6K-SE,2026-10-27,https://vast.ai/pricing
+RTX PRO 6000 WS,Vast.ai,Vast.ai on-demand median,on-demand,1.6,P6K-WS,2026-10-27,https://vast.ai/pricing
+RTX PRO 6000 Max-Q,Vast.ai,Vast.ai on-demand median,on-demand,1.429,P6K-MQ,2026-10-27,https://vast.ai/pricing
+RTX PRO 6000,HyperAI,"HyperAI 1x (getdeploying, in stock)",on-demand,0.8,P6K-SE,2026-10-27,https://getdeploying.com/gpus/nvidia-rtx-pro-6000
+RTX PRO 6000 SE,Vast.ai,"Vast.ai 4x interruptible, verified host (min bid; all-host median $0.62)",interruptible,0.78,P6K-SE,2026-10-27,https://vast.ai/pricing
+RTX PRO 6000 SE,Nebius,Nebius spot (floor; floats),interruptible,0.79,P6K-SE,2026-10-27,https://nebius.com/prices
+RTX PRO 6000 WS,RunPod,RunPod Community,on-demand,1.69,P6K-WS,2026-10-27,https://www.runpod.io/pricing
+RTX PRO 6000 SE,Nebius,Nebius on-demand (1x/8x only),on-demand,1.8,P6K-SE,2026-10-27,https://nebius.com/prices
+RTX PRO 6000 SE,Hyperstack,Hyperstack (sold out),on-demand,1.85,P6K-SE,2026-10-27,https://www.hyperstack.cloud/gpu-pricing
+RTX PRO 6000,UpCloud,UpCloud 4x ($7.52/node-h),on-demand,1.88,P6K-SE,2026-10-27,https://upcloud.com/pricing/
+RTX PRO 6000,EcoHash,EcoHash 4x ($7.56/node-h),on-demand,1.89,P6K-SE,2026-10-27,https://getdeploying.com/gpus/nvidia-rtx-pro-6000
+RTX PRO 6000,Massed Compute,Massed Compute 4x ($8.76/node-h),on-demand,2.19,P6K-SE,2026-10-27,https://vm.massedcompute.com/pricing
+RTX PRO 6000,Jarvislabs,Jarvislabs,on-demand,2.19,P6K-SE,2026-10-27,https://jarvislabs.ai/pricing
+RTX PRO 6000 SE,RunPod,RunPod Secure 4x ($9.96/node-h),on-demand,2.49,P6K-SE,2026-10-27,https://www.runpod.io/pricing
+RTX PRO 6000 SE,Verda,Verda on-demand,on-demand,2.567,P6K-SE,2026-10-27,https://verda.com/pricing
+RTX PRO 6000 SE,Verda,Verda spot 4x ($5.13/node-h),interruptible,1.284,P6K-SE,2026-10-27,https://verda.com/pricing
+RTX PRO 6000,Lyceum,"Lyceum spot 4x ($5.16/node-h, EU)",interruptible,1.29,P6K-SE,2026-10-27,https://lyceum.technology/pricing
+RTX PRO 6000,UpCloud,UpCloud spot (4x out of stock),interruptible,0.99,P6K-SE,2026-10-27,https://upcloud.com/pricing/
+RTX 6000 Ada,Vast.ai,Vast.ai on-demand,on-demand,0.654,Ada,2026-10-27,https://vast.ai/pricing
+RTX 6000 Ada,Vast.ai,"Vast.ai 4x node, verified host TR ($2.40/node-h)",on-demand,0.601,Ada,2026-10-27,https://vast.ai/pricing
+RTX 6000 Ada,Vast.ai,Vast.ai interruptible,interruptible,0.467,Ada,2026-10-27,https://vast.ai/pricing
+RTX 6000 Ada,Massed Compute,Massed Compute 4x ($3.16/node-h; out of stock 27 Oct),on-demand,0.79,Ada,2026-10-27,https://vm.massedcompute.com/pricing
+RTX 6000 Ada,RunPod,RunPod Secure 4x ($3.96/node-h; in stock),on-demand,0.99,Ada,2026-10-27,https://www.runpod.io/pricing
+RTX 6000 Ada,Verda,Verda spot,interruptible,0.7265,Ada,2026-10-27,https://verda.com/pricing
+L40S,Vast.ai,Vast.ai on-demand,on-demand,0.735,L40S,2026-10-27,https://vast.ai/pricing
+L40S,Scaleway,"Scaleway (EU, excl. VAT)",on-demand,1.639,L40S,2026-10-27,https://www.scaleway.com/en/pricing/gpu/
+A100 80GB PCIe,Vast.ai,Vast.ai on-demand (median; p25 $0.403),on-demand,0.667,A100PCIe,2026-10-27,https://vast.ai/pricing
+A100 80GB PCIe,Vast.ai,Vast.ai interruptible (min bid),interruptible,0.278,A100PCIe,2026-10-27,https://vast.ai/pricing
+A100 80GB SXM,Vast.ai,Vast.ai on-demand,on-demand,0.735,A100SXM,2026-10-27,https://vast.ai/pricing
+A100 80GB SXM,Vast.ai,Vast.ai interruptible,interruptible,0.46,A100SXM,2026-10-27,https://vast.ai/pricing
+H100 SXM,Vast.ai,Vast.ai on-demand,on-demand,2.702,H100SXM,2026-10-27,https://vast.ai/pricing
+H100 PCIe,Hyperstack,Hyperstack,on-demand,2.5,H100PCIe,2026-10-27,https://www.hyperstack.cloud/gpu-pricing
+H100 SXM,Nebius,Nebius spot (floor; floats to $4.49),interruptible,0.79,H100SXM,2026-10-27,https://nebius.com/prices
+H200,Hyperstack,Hyperstack,on-demand,3.99,H200,2026-10-27,https://www.hyperstack.cloud/gpu-pricing
+B200,Hyperstack,Hyperstack,on-demand,6,B200,2026-10-27,https://www.hyperstack.cloud/gpu-pricing
