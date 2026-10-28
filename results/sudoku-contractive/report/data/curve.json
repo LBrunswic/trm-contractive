@@ -1,0 +1,3522 @@
+[
+{
+"arm": "A0@T",
+"step": 1,
+"exact": 2.73
+},
+{
+"arm": "A0@T",
+"step": 2,
+"exact": 22.94
+},
+{
+"arm": "A0@T",
+"step": 3,
+"exact": 41.2
+},
+{
+"arm": "A0@T",
+"step": 4,
+"exact": 50.22
+},
+{
+"arm": "A0@T",
+"step": 5,
+"exact": 54.34
+},
+{
+"arm": "A0@T",
+"step": 6,
+"exact": 57.06
+},
+{
+"arm": "A0@T",
+"step": 7,
+"exact": 58.66
+},
+{
+"arm": "A0@T",
+"step": 8,
+"exact": 59.9
+},
+{
+"arm": "A0@T",
+"step": 9,
+"exact": 60.83
+},
+{
+"arm": "A0@T",
+"step": 10,
+"exact": 61.54
+},
+{
+"arm": "A0@T",
+"step": 11,
+"exact": 62.05
+},
+{
+"arm": "A0@T",
+"step": 12,
+"exact": 62.58
+},
+{
+"arm": "A0@T",
+"step": 13,
+"exact": 63.0
+},
+{
+"arm": "A0@T",
+"step": 14,
+"exact": 63.46
+},
+{
+"arm": "A0@T",
+"step": 15,
+"exact": 63.86
+},
+{
+"arm": "A0@T",
+"step": 16,
+"exact": 64.18
+},
+{
+"arm": "A0@T",
+"step": 17,
+"exact": 64.43
+},
+{
+"arm": "A0@T",
+"step": 18,
+"exact": 64.66
+},
+{
+"arm": "A0@T",
+"step": 19,
+"exact": 64.88
+},
+{
+"arm": "A0@T",
+"step": 20,
+"exact": 65.04
+},
+{
+"arm": "A0@T",
+"step": 21,
+"exact": 65.23
+},
+{
+"arm": "A0@T",
+"step": 22,
+"exact": 65.41
+},
+{
+"arm": "A0@T",
+"step": 23,
+"exact": 65.58
+},
+{
+"arm": "A0@T",
+"step": 24,
+"exact": 65.72
+},
+{
+"arm": "A0@T",
+"step": 25,
+"exact": 65.86
+},
+{
+"arm": "A0@T",
+"step": 26,
+"exact": 65.98
+},
+{
+"arm": "A0@T",
+"step": 27,
+"exact": 66.09
+},
+{
+"arm": "A0@T",
+"step": 28,
+"exact": 66.24
+},
+{
+"arm": "A0@T",
+"step": 29,
+"exact": 66.33
+},
+{
+"arm": "A0@T",
+"step": 30,
+"exact": 66.45
+},
+{
+"arm": "A0@T",
+"step": 31,
+"exact": 66.56
+},
+{
+"arm": "A0@T",
+"step": 32,
+"exact": 66.66
+},
+{
+"arm": "A0@T",
+"step": 33,
+"exact": 66.77
+},
+{
+"arm": "A0@T",
+"step": 34,
+"exact": 66.86
+},
+{
+"arm": "A0@T",
+"step": 35,
+"exact": 66.94
+},
+{
+"arm": "A0@T",
+"step": 36,
+"exact": 67.02
+},
+{
+"arm": "A0@T",
+"step": 37,
+"exact": 67.13
+},
+{
+"arm": "A0@T",
+"step": 38,
+"exact": 67.21
+},
+{
+"arm": "A0@T",
+"step": 39,
+"exact": 67.26
+},
+{
+"arm": "A0@T",
+"step": 40,
+"exact": 67.34
+},
+{
+"arm": "A0@T",
+"step": 41,
+"exact": 67.39
+},
+{
+"arm": "A0@T",
+"step": 42,
+"exact": 67.47
+},
+{
+"arm": "A0@T",
+"step": 43,
+"exact": 67.52
+},
+{
+"arm": "A0@T",
+"step": 44,
+"exact": 67.6
+},
+{
+"arm": "A0@T",
+"step": 45,
+"exact": 67.66
+},
+{
+"arm": "A0@T",
+"step": 46,
+"exact": 67.71
+},
+{
+"arm": "A0@T",
+"step": 47,
+"exact": 67.78
+},
+{
+"arm": "A0@T",
+"step": 48,
+"exact": 67.82
+},
+{
+"arm": "A0@T",
+"step": 49,
+"exact": 67.88
+},
+{
+"arm": "A0@T",
+"step": 50,
+"exact": 67.91
+},
+{
+"arm": "A0@T",
+"step": 51,
+"exact": 67.98
+},
+{
+"arm": "A0@T",
+"step": 52,
+"exact": 68.03
+},
+{
+"arm": "A0@T",
+"step": 53,
+"exact": 68.06
+},
+{
+"arm": "A0@T",
+"step": 54,
+"exact": 68.12
+},
+{
+"arm": "A0@T",
+"step": 55,
+"exact": 68.2
+},
+{
+"arm": "A0@T",
+"step": 56,
+"exact": 68.25
+},
+{
+"arm": "A0@T",
+"step": 57,
+"exact": 68.32
+},
+{
+"arm": "A0@T",
+"step": 58,
+"exact": 68.35
+},
+{
+"arm": "A0@T",
+"step": 59,
+"exact": 68.41
+},
+{
+"arm": "A0@T",
+"step": 60,
+"exact": 68.45
+},
+{
+"arm": "A0@T",
+"step": 61,
+"exact": 68.48
+},
+{
+"arm": "A0@T",
+"step": 62,
+"exact": 68.51
+},
+{
+"arm": "A0@T",
+"step": 63,
+"exact": 68.56
+},
+{
+"arm": "A0@T",
+"step": 64,
+"exact": 68.6
+},
+{
+"arm": "A0",
+"step": 1,
+"exact": 2.8
+},
+{
+"arm": "A0",
+"step": 2,
+"exact": 26.92
+},
+{
+"arm": "A0",
+"step": 3,
+"exact": 45.2
+},
+{
+"arm": "A0",
+"step": 4,
+"exact": 53.78
+},
+{
+"arm": "A0",
+"step": 5,
+"exact": 58.0
+},
+{
+"arm": "A0",
+"step": 6,
+"exact": 60.71
+},
+{
+"arm": "A0",
+"step": 7,
+"exact": 62.63
+},
+{
+"arm": "A0",
+"step": 8,
+"exact": 64.1
+},
+{
+"arm": "A0",
+"step": 9,
+"exact": 65.1
+},
+{
+"arm": "A0",
+"step": 10,
+"exact": 66.0
+},
+{
+"arm": "A0",
+"step": 11,
+"exact": 66.79
+},
+{
+"arm": "A0",
+"step": 12,
+"exact": 67.41
+},
+{
+"arm": "A0",
+"step": 13,
+"exact": 67.93
+},
+{
+"arm": "A0",
+"step": 14,
+"exact": 68.38
+},
+{
+"arm": "A0",
+"step": 15,
+"exact": 68.8
+},
+{
+"arm": "A0",
+"step": 16,
+"exact": 69.15
+},
+{
+"arm": "A0",
+"step": 17,
+"exact": 69.5
+},
+{
+"arm": "A0",
+"step": 18,
+"exact": 69.82
+},
+{
+"arm": "A0",
+"step": 19,
+"exact": 70.08
+},
+{
+"arm": "A0",
+"step": 20,
+"exact": 70.36
+},
+{
+"arm": "A0",
+"step": 21,
+"exact": 70.61
+},
+{
+"arm": "A0",
+"step": 22,
+"exact": 70.83
+},
+{
+"arm": "A0",
+"step": 23,
+"exact": 71.05
+},
+{
+"arm": "A0",
+"step": 24,
+"exact": 71.24
+},
+{
+"arm": "A0",
+"step": 25,
+"exact": 71.41
+},
+{
+"arm": "A0",
+"step": 26,
+"exact": 71.58
+},
+{
+"arm": "A0",
+"step": 27,
+"exact": 71.76
+},
+{
+"arm": "A0",
+"step": 28,
+"exact": 71.91
+},
+{
+"arm": "A0",
+"step": 29,
+"exact": 72.03
+},
+{
+"arm": "A0",
+"step": 30,
+"exact": 72.16
+},
+{
+"arm": "A0",
+"step": 31,
+"exact": 72.3
+},
+{
+"arm": "A0",
+"step": 32,
+"exact": 72.44
+},
+{
+"arm": "A0",
+"step": 33,
+"exact": 72.53
+},
+{
+"arm": "A0",
+"step": 34,
+"exact": 72.64
+},
+{
+"arm": "A0",
+"step": 35,
+"exact": 72.75
+},
+{
+"arm": "A0",
+"step": 36,
+"exact": 72.83
+},
+{
+"arm": "A0",
+"step": 37,
+"exact": 72.91
+},
+{
+"arm": "A0",
+"step": 38,
+"exact": 73.02
+},
+{
+"arm": "A0",
+"step": 39,
+"exact": 73.13
+},
+{
+"arm": "A0",
+"step": 40,
+"exact": 73.2
+},
+{
+"arm": "A0",
+"step": 41,
+"exact": 73.29
+},
+{
+"arm": "A0",
+"step": 42,
+"exact": 73.35
+},
+{
+"arm": "A0",
+"step": 43,
+"exact": 73.45
+},
+{
+"arm": "A0",
+"step": 44,
+"exact": 73.55
+},
+{
+"arm": "A0",
+"step": 45,
+"exact": 73.63
+},
+{
+"arm": "A0",
+"step": 46,
+"exact": 73.7
+},
+{
+"arm": "A0",
+"step": 47,
+"exact": 73.79
+},
+{
+"arm": "A0",
+"step": 48,
+"exact": 73.88
+},
+{
+"arm": "A0",
+"step": 49,
+"exact": 73.91
+},
+{
+"arm": "A0",
+"step": 50,
+"exact": 73.98
+},
+{
+"arm": "A0",
+"step": 51,
+"exact": 74.03
+},
+{
+"arm": "A0",
+"step": 52,
+"exact": 74.08
+},
+{
+"arm": "A0",
+"step": 53,
+"exact": 74.15
+},
+{
+"arm": "A0",
+"step": 54,
+"exact": 74.2
+},
+{
+"arm": "A0",
+"step": 55,
+"exact": 74.26
+},
+{
+"arm": "A0",
+"step": 56,
+"exact": 74.31
+},
+{
+"arm": "A0",
+"step": 57,
+"exact": 74.37
+},
+{
+"arm": "A0",
+"step": 58,
+"exact": 74.43
+},
+{
+"arm": "A0",
+"step": 59,
+"exact": 74.5
+},
+{
+"arm": "A0",
+"step": 60,
+"exact": 74.54
+},
+{
+"arm": "A0",
+"step": 61,
+"exact": 74.58
+},
+{
+"arm": "A0",
+"step": 62,
+"exact": 74.63
+},
+{
+"arm": "A0",
+"step": 63,
+"exact": 74.66
+},
+{
+"arm": "A0",
+"step": 64,
+"exact": 74.7
+},
+{
+"arm": "A1",
+"step": 1,
+"exact": 2.13
+},
+{
+"arm": "A1",
+"step": 2,
+"exact": 2.31
+},
+{
+"arm": "A1",
+"step": 3,
+"exact": 2.92
+},
+{
+"arm": "A1",
+"step": 4,
+"exact": 4.1
+},
+{
+"arm": "A1",
+"step": 5,
+"exact": 5.54
+},
+{
+"arm": "A1",
+"step": 6,
+"exact": 6.62
+},
+{
+"arm": "A1",
+"step": 7,
+"exact": 7.42
+},
+{
+"arm": "A1",
+"step": 8,
+"exact": 8.15
+},
+{
+"arm": "A1",
+"step": 9,
+"exact": 8.76
+},
+{
+"arm": "A1",
+"step": 10,
+"exact": 9.16
+},
+{
+"arm": "A1",
+"step": 11,
+"exact": 9.5
+},
+{
+"arm": "A1",
+"step": 12,
+"exact": 9.74
+},
+{
+"arm": "A1",
+"step": 13,
+"exact": 9.94
+},
+{
+"arm": "A1",
+"step": 14,
+"exact": 10.13
+},
+{
+"arm": "A1",
+"step": 15,
+"exact": 10.32
+},
+{
+"arm": "A1",
+"step": 16,
+"exact": 10.48
+},
+{
+"arm": "A1",
+"step": 17,
+"exact": 10.63
+},
+{
+"arm": "A1",
+"step": 18,
+"exact": 10.74
+},
+{
+"arm": "A1",
+"step": 19,
+"exact": 10.86
+},
+{
+"arm": "A1",
+"step": 20,
+"exact": 10.93
+},
+{
+"arm": "A1",
+"step": 21,
+"exact": 10.98
+},
+{
+"arm": "A1",
+"step": 22,
+"exact": 11.06
+},
+{
+"arm": "A1",
+"step": 23,
+"exact": 11.1
+},
+{
+"arm": "A1",
+"step": 24,
+"exact": 11.14
+},
+{
+"arm": "A1",
+"step": 25,
+"exact": 11.19
+},
+{
+"arm": "A1",
+"step": 26,
+"exact": 11.22
+},
+{
+"arm": "A1",
+"step": 27,
+"exact": 11.26
+},
+{
+"arm": "A1",
+"step": 28,
+"exact": 11.29
+},
+{
+"arm": "A1",
+"step": 29,
+"exact": 11.3
+},
+{
+"arm": "A1",
+"step": 30,
+"exact": 11.3
+},
+{
+"arm": "A1",
+"step": 31,
+"exact": 11.34
+},
+{
+"arm": "A1",
+"step": 32,
+"exact": 11.35
+},
+{
+"arm": "A1",
+"step": 33,
+"exact": 11.36
+},
+{
+"arm": "A1",
+"step": 34,
+"exact": 11.38
+},
+{
+"arm": "A1",
+"step": 35,
+"exact": 11.39
+},
+{
+"arm": "A1",
+"step": 36,
+"exact": 11.4
+},
+{
+"arm": "A1",
+"step": 37,
+"exact": 11.4
+},
+{
+"arm": "A1",
+"step": 38,
+"exact": 11.42
+},
+{
+"arm": "A1",
+"step": 39,
+"exact": 11.43
+},
+{
+"arm": "A1",
+"step": 40,
+"exact": 11.43
+},
+{
+"arm": "A1",
+"step": 41,
+"exact": 11.45
+},
+{
+"arm": "A1",
+"step": 42,
+"exact": 11.45
+},
+{
+"arm": "A1",
+"step": 43,
+"exact": 11.47
+},
+{
+"arm": "A1",
+"step": 44,
+"exact": 11.48
+},
+{
+"arm": "A1",
+"step": 45,
+"exact": 11.5
+},
+{
+"arm": "A1",
+"step": 46,
+"exact": 11.51
+},
+{
+"arm": "A1",
+"step": 47,
+"exact": 11.51
+},
+{
+"arm": "A1",
+"step": 48,
+"exact": 11.52
+},
+{
+"arm": "A1",
+"step": 49,
+"exact": 11.52
+},
+{
+"arm": "A1",
+"step": 50,
+"exact": 11.52
+},
+{
+"arm": "A1",
+"step": 51,
+"exact": 11.52
+},
+{
+"arm": "A1",
+"step": 52,
+"exact": 11.54
+},
+{
+"arm": "A1",
+"step": 53,
+"exact": 11.55
+},
+{
+"arm": "A1",
+"step": 54,
+"exact": 11.56
+},
+{
+"arm": "A1",
+"step": 55,
+"exact": 11.56
+},
+{
+"arm": "A1",
+"step": 56,
+"exact": 11.56
+},
+{
+"arm": "A1",
+"step": 57,
+"exact": 11.56
+},
+{
+"arm": "A1",
+"step": 58,
+"exact": 11.56
+},
+{
+"arm": "A1",
+"step": 59,
+"exact": 11.56
+},
+{
+"arm": "A1",
+"step": 60,
+"exact": 11.57
+},
+{
+"arm": "A1",
+"step": 61,
+"exact": 11.58
+},
+{
+"arm": "A1",
+"step": 62,
+"exact": 11.58
+},
+{
+"arm": "A1",
+"step": 63,
+"exact": 11.58
+},
+{
+"arm": "A1",
+"step": 64,
+"exact": 11.58
+},
+{
+"arm": "A6",
+"step": 1,
+"exact": 2.26
+},
+{
+"arm": "A6",
+"step": 2,
+"exact": 8.63
+},
+{
+"arm": "A6",
+"step": 3,
+"exact": 15.91
+},
+{
+"arm": "A6",
+"step": 4,
+"exact": 19.64
+},
+{
+"arm": "A6",
+"step": 5,
+"exact": 22.85
+},
+{
+"arm": "A6",
+"step": 6,
+"exact": 25.08
+},
+{
+"arm": "A6",
+"step": 7,
+"exact": 26.44
+},
+{
+"arm": "A6",
+"step": 8,
+"exact": 27.22
+},
+{
+"arm": "A6",
+"step": 9,
+"exact": 27.33
+},
+{
+"arm": "A6",
+"step": 10,
+"exact": 27.35
+},
+{
+"arm": "A6",
+"step": 11,
+"exact": 27.56
+},
+{
+"arm": "A6",
+"step": 12,
+"exact": 27.65
+},
+{
+"arm": "A6",
+"step": 13,
+"exact": 27.75
+},
+{
+"arm": "A6",
+"step": 14,
+"exact": 27.85
+},
+{
+"arm": "A6",
+"step": 15,
+"exact": 27.8
+},
+{
+"arm": "A6",
+"step": 16,
+"exact": 27.86
+},
+{
+"arm": "A6",
+"step": 17,
+"exact": 27.98
+},
+{
+"arm": "A6",
+"step": 18,
+"exact": 28.01
+},
+{
+"arm": "A6",
+"step": 19,
+"exact": 28.14
+},
+{
+"arm": "A6",
+"step": 20,
+"exact": 28.15
+},
+{
+"arm": "A6",
+"step": 21,
+"exact": 28.11
+},
+{
+"arm": "A6",
+"step": 22,
+"exact": 28.12
+},
+{
+"arm": "A6",
+"step": 23,
+"exact": 28.14
+},
+{
+"arm": "A6",
+"step": 24,
+"exact": 28.2
+},
+{
+"arm": "A6",
+"step": 25,
+"exact": 28.17
+},
+{
+"arm": "A6",
+"step": 26,
+"exact": 28.2
+},
+{
+"arm": "A6",
+"step": 27,
+"exact": 28.2
+},
+{
+"arm": "A6",
+"step": 28,
+"exact": 28.22
+},
+{
+"arm": "A6",
+"step": 29,
+"exact": 28.2
+},
+{
+"arm": "A6",
+"step": 30,
+"exact": 28.2
+},
+{
+"arm": "A6",
+"step": 31,
+"exact": 28.18
+},
+{
+"arm": "A6",
+"step": 32,
+"exact": 28.35
+},
+{
+"arm": "A6",
+"step": 33,
+"exact": 28.34
+},
+{
+"arm": "A6",
+"step": 34,
+"exact": 28.41
+},
+{
+"arm": "A6",
+"step": 35,
+"exact": 28.37
+},
+{
+"arm": "A6",
+"step": 36,
+"exact": 28.42
+},
+{
+"arm": "A6",
+"step": 37,
+"exact": 28.45
+},
+{
+"arm": "A6",
+"step": 38,
+"exact": 28.4
+},
+{
+"arm": "A6",
+"step": 39,
+"exact": 28.33
+},
+{
+"arm": "A6",
+"step": 40,
+"exact": 28.37
+},
+{
+"arm": "A6",
+"step": 41,
+"exact": 28.45
+},
+{
+"arm": "A6",
+"step": 42,
+"exact": 28.43
+},
+{
+"arm": "A6",
+"step": 43,
+"exact": 28.52
+},
+{
+"arm": "A6",
+"step": 44,
+"exact": 28.47
+},
+{
+"arm": "A6",
+"step": 45,
+"exact": 28.39
+},
+{
+"arm": "A6",
+"step": 46,
+"exact": 28.34
+},
+{
+"arm": "A6",
+"step": 47,
+"exact": 28.27
+},
+{
+"arm": "A6",
+"step": 48,
+"exact": 28.33
+},
+{
+"arm": "A6",
+"step": 49,
+"exact": 28.32
+},
+{
+"arm": "A6",
+"step": 50,
+"exact": 28.36
+},
+{
+"arm": "A6",
+"step": 51,
+"exact": 28.42
+},
+{
+"arm": "A6",
+"step": 52,
+"exact": 28.46
+},
+{
+"arm": "A6",
+"step": 53,
+"exact": 28.51
+},
+{
+"arm": "A6",
+"step": 54,
+"exact": 28.59
+},
+{
+"arm": "A6",
+"step": 55,
+"exact": 28.48
+},
+{
+"arm": "A6",
+"step": 56,
+"exact": 28.57
+},
+{
+"arm": "A6",
+"step": 57,
+"exact": 28.53
+},
+{
+"arm": "A6",
+"step": 58,
+"exact": 28.54
+},
+{
+"arm": "A6",
+"step": 59,
+"exact": 28.35
+},
+{
+"arm": "A6",
+"step": 60,
+"exact": 28.27
+},
+{
+"arm": "A6",
+"step": 61,
+"exact": 28.22
+},
+{
+"arm": "A6",
+"step": 62,
+"exact": 28.4
+},
+{
+"arm": "A6",
+"step": 63,
+"exact": 28.49
+},
+{
+"arm": "A6",
+"step": 64,
+"exact": 28.6
+},
+{
+"arm": "A7",
+"step": 1,
+"exact": 2.28
+},
+{
+"arm": "A7",
+"step": 2,
+"exact": 16.71
+},
+{
+"arm": "A7",
+"step": 3,
+"exact": 33.78
+},
+{
+"arm": "A7",
+"step": 4,
+"exact": 42.88
+},
+{
+"arm": "A7",
+"step": 5,
+"exact": 46.84
+},
+{
+"arm": "A7",
+"step": 6,
+"exact": 49.25
+},
+{
+"arm": "A7",
+"step": 7,
+"exact": 50.98
+},
+{
+"arm": "A7",
+"step": 8,
+"exact": 51.88
+},
+{
+"arm": "A7",
+"step": 9,
+"exact": 52.59
+},
+{
+"arm": "A7",
+"step": 10,
+"exact": 53.22
+},
+{
+"arm": "A7",
+"step": 11,
+"exact": 53.76
+},
+{
+"arm": "A7",
+"step": 12,
+"exact": 54.16
+},
+{
+"arm": "A7",
+"step": 13,
+"exact": 54.49
+},
+{
+"arm": "A7",
+"step": 14,
+"exact": 54.78
+},
+{
+"arm": "A7",
+"step": 15,
+"exact": 55.09
+},
+{
+"arm": "A7",
+"step": 16,
+"exact": 55.32
+},
+{
+"arm": "A7",
+"step": 17,
+"exact": 55.5
+},
+{
+"arm": "A7",
+"step": 18,
+"exact": 55.72
+},
+{
+"arm": "A7",
+"step": 19,
+"exact": 55.89
+},
+{
+"arm": "A7",
+"step": 20,
+"exact": 56.01
+},
+{
+"arm": "A7",
+"step": 21,
+"exact": 56.19
+},
+{
+"arm": "A7",
+"step": 22,
+"exact": 56.3
+},
+{
+"arm": "A7",
+"step": 23,
+"exact": 56.42
+},
+{
+"arm": "A7",
+"step": 24,
+"exact": 56.55
+},
+{
+"arm": "A7",
+"step": 25,
+"exact": 56.65
+},
+{
+"arm": "A7",
+"step": 26,
+"exact": 56.74
+},
+{
+"arm": "A7",
+"step": 27,
+"exact": 56.82
+},
+{
+"arm": "A7",
+"step": 28,
+"exact": 56.88
+},
+{
+"arm": "A7",
+"step": 29,
+"exact": 56.96
+},
+{
+"arm": "A7",
+"step": 30,
+"exact": 57.03
+},
+{
+"arm": "A7",
+"step": 31,
+"exact": 57.08
+},
+{
+"arm": "A7",
+"step": 32,
+"exact": 57.14
+},
+{
+"arm": "A7",
+"step": 33,
+"exact": 57.2
+},
+{
+"arm": "A7",
+"step": 34,
+"exact": 57.24
+},
+{
+"arm": "A7",
+"step": 35,
+"exact": 57.29
+},
+{
+"arm": "A7",
+"step": 36,
+"exact": 57.35
+},
+{
+"arm": "A7",
+"step": 37,
+"exact": 57.39
+},
+{
+"arm": "A7",
+"step": 38,
+"exact": 57.46
+},
+{
+"arm": "A7",
+"step": 39,
+"exact": 57.5
+},
+{
+"arm": "A7",
+"step": 40,
+"exact": 57.57
+},
+{
+"arm": "A7",
+"step": 41,
+"exact": 57.61
+},
+{
+"arm": "A7",
+"step": 42,
+"exact": 57.67
+},
+{
+"arm": "A7",
+"step": 43,
+"exact": 57.7
+},
+{
+"arm": "A7",
+"step": 44,
+"exact": 57.78
+},
+{
+"arm": "A7",
+"step": 45,
+"exact": 57.82
+},
+{
+"arm": "A7",
+"step": 46,
+"exact": 57.84
+},
+{
+"arm": "A7",
+"step": 47,
+"exact": 57.87
+},
+{
+"arm": "A7",
+"step": 48,
+"exact": 57.89
+},
+{
+"arm": "A7",
+"step": 49,
+"exact": 57.92
+},
+{
+"arm": "A7",
+"step": 50,
+"exact": 57.96
+},
+{
+"arm": "A7",
+"step": 51,
+"exact": 57.97
+},
+{
+"arm": "A7",
+"step": 52,
+"exact": 58.02
+},
+{
+"arm": "A7",
+"step": 53,
+"exact": 58.05
+},
+{
+"arm": "A7",
+"step": 54,
+"exact": 58.08
+},
+{
+"arm": "A7",
+"step": 55,
+"exact": 58.12
+},
+{
+"arm": "A7",
+"step": 56,
+"exact": 58.14
+},
+{
+"arm": "A7",
+"step": 57,
+"exact": 58.17
+},
+{
+"arm": "A7",
+"step": 58,
+"exact": 58.2
+},
+{
+"arm": "A7",
+"step": 59,
+"exact": 58.24
+},
+{
+"arm": "A7",
+"step": 60,
+"exact": 58.26
+},
+{
+"arm": "A7",
+"step": 61,
+"exact": 58.28
+},
+{
+"arm": "A7",
+"step": 62,
+"exact": 58.3
+},
+{
+"arm": "A7",
+"step": 63,
+"exact": 58.32
+},
+{
+"arm": "A7",
+"step": 64,
+"exact": 58.34
+},
+{
+"arm": "A9",
+"step": 1,
+"exact": 2.27
+},
+{
+"arm": "A9",
+"step": 2,
+"exact": 14.18
+},
+{
+"arm": "A9",
+"step": 3,
+"exact": 30.64
+},
+{
+"arm": "A9",
+"step": 4,
+"exact": 41.6
+},
+{
+"arm": "A9",
+"step": 5,
+"exact": 46.4
+},
+{
+"arm": "A9",
+"step": 6,
+"exact": 48.74
+},
+{
+"arm": "A9",
+"step": 7,
+"exact": 50.09
+},
+{
+"arm": "A9",
+"step": 8,
+"exact": 50.94
+},
+{
+"arm": "A9",
+"step": 9,
+"exact": 51.51
+},
+{
+"arm": "A9",
+"step": 10,
+"exact": 51.93
+},
+{
+"arm": "A9",
+"step": 11,
+"exact": 52.22
+},
+{
+"arm": "A9",
+"step": 12,
+"exact": 52.47
+},
+{
+"arm": "A9",
+"step": 13,
+"exact": 52.69
+},
+{
+"arm": "A9",
+"step": 14,
+"exact": 52.9
+},
+{
+"arm": "A9",
+"step": 15,
+"exact": 53.02
+},
+{
+"arm": "A9",
+"step": 16,
+"exact": 53.14
+},
+{
+"arm": "A9",
+"step": 17,
+"exact": 53.27
+},
+{
+"arm": "A9",
+"step": 18,
+"exact": 53.35
+},
+{
+"arm": "A9",
+"step": 19,
+"exact": 53.44
+},
+{
+"arm": "A9",
+"step": 20,
+"exact": 53.51
+},
+{
+"arm": "A9",
+"step": 21,
+"exact": 53.6
+},
+{
+"arm": "A9",
+"step": 22,
+"exact": 53.67
+},
+{
+"arm": "A9",
+"step": 23,
+"exact": 53.71
+},
+{
+"arm": "A9",
+"step": 24,
+"exact": 53.79
+},
+{
+"arm": "A9",
+"step": 25,
+"exact": 53.86
+},
+{
+"arm": "A9",
+"step": 26,
+"exact": 53.9
+},
+{
+"arm": "A9",
+"step": 27,
+"exact": 53.95
+},
+{
+"arm": "A9",
+"step": 28,
+"exact": 53.97
+},
+{
+"arm": "A9",
+"step": 29,
+"exact": 54.0
+},
+{
+"arm": "A9",
+"step": 30,
+"exact": 54.02
+},
+{
+"arm": "A9",
+"step": 31,
+"exact": 54.05
+},
+{
+"arm": "A9",
+"step": 32,
+"exact": 54.09
+},
+{
+"arm": "A9",
+"step": 33,
+"exact": 54.13
+},
+{
+"arm": "A9",
+"step": 34,
+"exact": 54.15
+},
+{
+"arm": "A9",
+"step": 35,
+"exact": 54.17
+},
+{
+"arm": "A9",
+"step": 36,
+"exact": 54.19
+},
+{
+"arm": "A9",
+"step": 37,
+"exact": 54.21
+},
+{
+"arm": "A9",
+"step": 38,
+"exact": 54.24
+},
+{
+"arm": "A9",
+"step": 39,
+"exact": 54.26
+},
+{
+"arm": "A9",
+"step": 40,
+"exact": 54.28
+},
+{
+"arm": "A9",
+"step": 41,
+"exact": 54.29
+},
+{
+"arm": "A9",
+"step": 42,
+"exact": 54.3
+},
+{
+"arm": "A9",
+"step": 43,
+"exact": 54.32
+},
+{
+"arm": "A9",
+"step": 44,
+"exact": 54.34
+},
+{
+"arm": "A9",
+"step": 45,
+"exact": 54.35
+},
+{
+"arm": "A9",
+"step": 46,
+"exact": 54.36
+},
+{
+"arm": "A9",
+"step": 47,
+"exact": 54.37
+},
+{
+"arm": "A9",
+"step": 48,
+"exact": 54.38
+},
+{
+"arm": "A9",
+"step": 49,
+"exact": 54.39
+},
+{
+"arm": "A9",
+"step": 50,
+"exact": 54.42
+},
+{
+"arm": "A9",
+"step": 51,
+"exact": 54.43
+},
+{
+"arm": "A9",
+"step": 52,
+"exact": 54.43
+},
+{
+"arm": "A9",
+"step": 53,
+"exact": 54.45
+},
+{
+"arm": "A9",
+"step": 54,
+"exact": 54.46
+},
+{
+"arm": "A9",
+"step": 55,
+"exact": 54.48
+},
+{
+"arm": "A9",
+"step": 56,
+"exact": 54.5
+},
+{
+"arm": "A9",
+"step": 57,
+"exact": 54.5
+},
+{
+"arm": "A9",
+"step": 58,
+"exact": 54.51
+},
+{
+"arm": "A9",
+"step": 59,
+"exact": 54.52
+},
+{
+"arm": "A9",
+"step": 60,
+"exact": 54.54
+},
+{
+"arm": "A9",
+"step": 61,
+"exact": 54.55
+},
+{
+"arm": "A9",
+"step": 62,
+"exact": 54.56
+},
+{
+"arm": "A9",
+"step": 63,
+"exact": 54.57
+},
+{
+"arm": "A9",
+"step": 64,
+"exact": 54.58
+},
+{
+"arm": "A8",
+"step": 1,
+"exact": 2.25
+},
+{
+"arm": "A8",
+"step": 2,
+"exact": 14.59
+},
+{
+"arm": "A8",
+"step": 3,
+"exact": 32.23
+},
+{
+"arm": "A8",
+"step": 4,
+"exact": 43.72
+},
+{
+"arm": "A8",
+"step": 5,
+"exact": 48.18
+},
+{
+"arm": "A8",
+"step": 6,
+"exact": 50.1
+},
+{
+"arm": "A8",
+"step": 7,
+"exact": 51.28
+},
+{
+"arm": "A8",
+"step": 8,
+"exact": 52.08
+},
+{
+"arm": "A8",
+"step": 9,
+"exact": 52.68
+},
+{
+"arm": "A8",
+"step": 10,
+"exact": 53.15
+},
+{
+"arm": "A8",
+"step": 11,
+"exact": 53.43
+},
+{
+"arm": "A8",
+"step": 12,
+"exact": 53.73
+},
+{
+"arm": "A8",
+"step": 13,
+"exact": 53.96
+},
+{
+"arm": "A8",
+"step": 14,
+"exact": 54.13
+},
+{
+"arm": "A8",
+"step": 15,
+"exact": 54.26
+},
+{
+"arm": "A8",
+"step": 16,
+"exact": 54.38
+},
+{
+"arm": "A8",
+"step": 17,
+"exact": 54.48
+},
+{
+"arm": "A8",
+"step": 18,
+"exact": 54.58
+},
+{
+"arm": "A8",
+"step": 19,
+"exact": 54.66
+},
+{
+"arm": "A8",
+"step": 20,
+"exact": 54.74
+},
+{
+"arm": "A8",
+"step": 21,
+"exact": 54.82
+},
+{
+"arm": "A8",
+"step": 22,
+"exact": 54.88
+},
+{
+"arm": "A8",
+"step": 23,
+"exact": 54.95
+},
+{
+"arm": "A8",
+"step": 24,
+"exact": 55.0
+},
+{
+"arm": "A8",
+"step": 25,
+"exact": 55.04
+},
+{
+"arm": "A8",
+"step": 26,
+"exact": 55.1
+},
+{
+"arm": "A8",
+"step": 27,
+"exact": 55.14
+},
+{
+"arm": "A8",
+"step": 28,
+"exact": 55.18
+},
+{
+"arm": "A8",
+"step": 29,
+"exact": 55.24
+},
+{
+"arm": "A8",
+"step": 30,
+"exact": 55.28
+},
+{
+"arm": "A8",
+"step": 31,
+"exact": 55.3
+},
+{
+"arm": "A8",
+"step": 32,
+"exact": 55.33
+},
+{
+"arm": "A8",
+"step": 33,
+"exact": 55.35
+},
+{
+"arm": "A8",
+"step": 34,
+"exact": 55.39
+},
+{
+"arm": "A8",
+"step": 35,
+"exact": 55.41
+},
+{
+"arm": "A8",
+"step": 36,
+"exact": 55.42
+},
+{
+"arm": "A8",
+"step": 37,
+"exact": 55.42
+},
+{
+"arm": "A8",
+"step": 38,
+"exact": 55.46
+},
+{
+"arm": "A8",
+"step": 39,
+"exact": 55.48
+},
+{
+"arm": "A8",
+"step": 40,
+"exact": 55.51
+},
+{
+"arm": "A8",
+"step": 41,
+"exact": 55.54
+},
+{
+"arm": "A8",
+"step": 42,
+"exact": 55.58
+},
+{
+"arm": "A8",
+"step": 43,
+"exact": 55.6
+},
+{
+"arm": "A8",
+"step": 44,
+"exact": 55.62
+},
+{
+"arm": "A8",
+"step": 45,
+"exact": 55.64
+},
+{
+"arm": "A8",
+"step": 46,
+"exact": 55.65
+},
+{
+"arm": "A8",
+"step": 47,
+"exact": 55.66
+},
+{
+"arm": "A8",
+"step": 48,
+"exact": 55.67
+},
+{
+"arm": "A8",
+"step": 49,
+"exact": 55.68
+},
+{
+"arm": "A8",
+"step": 50,
+"exact": 55.69
+},
+{
+"arm": "A8",
+"step": 51,
+"exact": 55.7
+},
+{
+"arm": "A8",
+"step": 52,
+"exact": 55.71
+},
+{
+"arm": "A8",
+"step": 53,
+"exact": 55.71
+},
+{
+"arm": "A8",
+"step": 54,
+"exact": 55.71
+},
+{
+"arm": "A8",
+"step": 55,
+"exact": 55.72
+},
+{
+"arm": "A8",
+"step": 56,
+"exact": 55.73
+},
+{
+"arm": "A8",
+"step": 57,
+"exact": 55.74
+},
+{
+"arm": "A8",
+"step": 58,
+"exact": 55.75
+},
+{
+"arm": "A8",
+"step": 59,
+"exact": 55.75
+},
+{
+"arm": "A8",
+"step": 60,
+"exact": 55.76
+},
+{
+"arm": "A8",
+"step": 61,
+"exact": 55.76
+},
+{
+"arm": "A8",
+"step": 62,
+"exact": 55.78
+},
+{
+"arm": "A8",
+"step": 63,
+"exact": 55.79
+},
+{
+"arm": "A8",
+"step": 64,
+"exact": 55.8
+},
+{
+"arm": "A2",
+"step": 1,
+"exact": 6.86
+},
+{
+"arm": "A2",
+"step": 2,
+"exact": 33.25
+},
+{
+"arm": "A2",
+"step": 3,
+"exact": 48.15
+},
+{
+"arm": "A2",
+"step": 4,
+"exact": 52.94
+},
+{
+"arm": "A2",
+"step": 5,
+"exact": 56.19
+},
+{
+"arm": "A2",
+"step": 6,
+"exact": 58.34
+},
+{
+"arm": "A2",
+"step": 7,
+"exact": 60.0
+},
+{
+"arm": "A2",
+"step": 8,
+"exact": 61.3
+},
+{
+"arm": "A2",
+"step": 9,
+"exact": 62.36
+},
+{
+"arm": "A2",
+"step": 10,
+"exact": 63.09
+},
+{
+"arm": "A2",
+"step": 11,
+"exact": 63.88
+},
+{
+"arm": "A2",
+"step": 12,
+"exact": 64.56
+},
+{
+"arm": "A2",
+"step": 13,
+"exact": 65.12
+},
+{
+"arm": "A2",
+"step": 14,
+"exact": 65.58
+},
+{
+"arm": "A2",
+"step": 15,
+"exact": 66.02
+},
+{
+"arm": "A2",
+"step": 16,
+"exact": 66.38
+},
+{
+"arm": "A2",
+"step": 17,
+"exact": 66.74
+},
+{
+"arm": "A2",
+"step": 18,
+"exact": 67.1
+},
+{
+"arm": "A2",
+"step": 19,
+"exact": 67.35
+},
+{
+"arm": "A2",
+"step": 20,
+"exact": 67.64
+},
+{
+"arm": "A2",
+"step": 21,
+"exact": 67.87
+},
+{
+"arm": "A2",
+"step": 22,
+"exact": 68.16
+},
+{
+"arm": "A2",
+"step": 23,
+"exact": 68.42
+},
+{
+"arm": "A2",
+"step": 24,
+"exact": 68.63
+},
+{
+"arm": "A2",
+"step": 25,
+"exact": 68.84
+},
+{
+"arm": "A2",
+"step": 26,
+"exact": 69.0
+},
+{
+"arm": "A2",
+"step": 27,
+"exact": 69.16
+},
+{
+"arm": "A2",
+"step": 28,
+"exact": 69.36
+},
+{
+"arm": "A2",
+"step": 29,
+"exact": 69.54
+},
+{
+"arm": "A2",
+"step": 30,
+"exact": 69.66
+},
+{
+"arm": "A2",
+"step": 31,
+"exact": 69.75
+},
+{
+"arm": "A2",
+"step": 32,
+"exact": 69.92
+},
+{
+"arm": "A2",
+"step": 33,
+"exact": 70.08
+},
+{
+"arm": "A2",
+"step": 34,
+"exact": 70.25
+},
+{
+"arm": "A2",
+"step": 35,
+"exact": 70.37
+},
+{
+"arm": "A2",
+"step": 36,
+"exact": 70.5
+},
+{
+"arm": "A2",
+"step": 37,
+"exact": 70.66
+},
+{
+"arm": "A2",
+"step": 38,
+"exact": 70.77
+},
+{
+"arm": "A2",
+"step": 39,
+"exact": 70.86
+},
+{
+"arm": "A2",
+"step": 40,
+"exact": 70.96
+},
+{
+"arm": "A2",
+"step": 41,
+"exact": 71.05
+},
+{
+"arm": "A2",
+"step": 42,
+"exact": 71.17
+},
+{
+"arm": "A2",
+"step": 43,
+"exact": 71.28
+},
+{
+"arm": "A2",
+"step": 44,
+"exact": 71.36
+},
+{
+"arm": "A2",
+"step": 45,
+"exact": 71.44
+},
+{
+"arm": "A2",
+"step": 46,
+"exact": 71.53
+},
+{
+"arm": "A2",
+"step": 47,
+"exact": 71.6
+},
+{
+"arm": "A2",
+"step": 48,
+"exact": 71.66
+},
+{
+"arm": "A2",
+"step": 49,
+"exact": 71.75
+},
+{
+"arm": "A2",
+"step": 50,
+"exact": 71.86
+},
+{
+"arm": "A2",
+"step": 51,
+"exact": 71.91
+},
+{
+"arm": "A2",
+"step": 52,
+"exact": 71.97
+},
+{
+"arm": "A2",
+"step": 53,
+"exact": 72.02
+},
+{
+"arm": "A2",
+"step": 54,
+"exact": 72.1
+},
+{
+"arm": "A2",
+"step": 55,
+"exact": 72.14
+},
+{
+"arm": "A2",
+"step": 56,
+"exact": 72.21
+},
+{
+"arm": "A2",
+"step": 57,
+"exact": 72.27
+},
+{
+"arm": "A2",
+"step": 58,
+"exact": 72.35
+},
+{
+"arm": "A2",
+"step": 59,
+"exact": 72.43
+},
+{
+"arm": "A2",
+"step": 60,
+"exact": 72.46
+},
+{
+"arm": "A2",
+"step": 61,
+"exact": 72.52
+},
+{
+"arm": "A2",
+"step": 62,
+"exact": 72.58
+},
+{
+"arm": "A2",
+"step": 63,
+"exact": 72.63
+},
+{
+"arm": "A2",
+"step": 64,
+"exact": 72.66
+},
+{
+"arm": "A4",
+"step": 1,
+"exact": 2.81
+},
+{
+"arm": "A4",
+"step": 2,
+"exact": 23.88
+},
+{
+"arm": "A4",
+"step": 3,
+"exact": 32.22
+},
+{
+"arm": "A4",
+"step": 4,
+"exact": 37.79
+},
+{
+"arm": "A4",
+"step": 5,
+"exact": 41.25
+},
+{
+"arm": "A4",
+"step": 6,
+"exact": 43.74
+},
+{
+"arm": "A4",
+"step": 7,
+"exact": 45.5
+},
+{
+"arm": "A4",
+"step": 8,
+"exact": 46.73
+},
+{
+"arm": "A4",
+"step": 9,
+"exact": 47.8
+},
+{
+"arm": "A4",
+"step": 10,
+"exact": 48.62
+},
+{
+"arm": "A4",
+"step": 11,
+"exact": 49.21
+},
+{
+"arm": "A4",
+"step": 12,
+"exact": 49.73
+},
+{
+"arm": "A4",
+"step": 13,
+"exact": 50.18
+},
+{
+"arm": "A4",
+"step": 14,
+"exact": 50.58
+},
+{
+"arm": "A4",
+"step": 15,
+"exact": 50.88
+},
+{
+"arm": "A4",
+"step": 16,
+"exact": 51.15
+},
+{
+"arm": "A4",
+"step": 17,
+"exact": 51.42
+},
+{
+"arm": "A4",
+"step": 18,
+"exact": 51.71
+},
+{
+"arm": "A4",
+"step": 19,
+"exact": 51.98
+},
+{
+"arm": "A4",
+"step": 20,
+"exact": 52.2
+},
+{
+"arm": "A4",
+"step": 21,
+"exact": 52.38
+},
+{
+"arm": "A4",
+"step": 22,
+"exact": 52.52
+},
+{
+"arm": "A4",
+"step": 23,
+"exact": 52.7
+},
+{
+"arm": "A4",
+"step": 24,
+"exact": 52.87
+},
+{
+"arm": "A4",
+"step": 25,
+"exact": 53.01
+},
+{
+"arm": "A4",
+"step": 26,
+"exact": 53.18
+},
+{
+"arm": "A4",
+"step": 27,
+"exact": 53.27
+},
+{
+"arm": "A4",
+"step": 28,
+"exact": 53.39
+},
+{
+"arm": "A4",
+"step": 29,
+"exact": 53.5
+},
+{
+"arm": "A4",
+"step": 30,
+"exact": 53.63
+},
+{
+"arm": "A4",
+"step": 31,
+"exact": 53.72
+},
+{
+"arm": "A4",
+"step": 32,
+"exact": 53.8
+},
+{
+"arm": "A4",
+"step": 33,
+"exact": 53.89
+},
+{
+"arm": "A4",
+"step": 34,
+"exact": 54.0
+},
+{
+"arm": "A4",
+"step": 35,
+"exact": 54.07
+},
+{
+"arm": "A4",
+"step": 36,
+"exact": 54.12
+},
+{
+"arm": "A4",
+"step": 37,
+"exact": 54.17
+},
+{
+"arm": "A4",
+"step": 38,
+"exact": 54.28
+},
+{
+"arm": "A4",
+"step": 39,
+"exact": 54.35
+},
+{
+"arm": "A4",
+"step": 40,
+"exact": 54.43
+},
+{
+"arm": "A4",
+"step": 41,
+"exact": 54.49
+},
+{
+"arm": "A4",
+"step": 42,
+"exact": 54.54
+},
+{
+"arm": "A4",
+"step": 43,
+"exact": 54.58
+},
+{
+"arm": "A4",
+"step": 44,
+"exact": 54.64
+},
+{
+"arm": "A4",
+"step": 45,
+"exact": 54.68
+},
+{
+"arm": "A4",
+"step": 46,
+"exact": 54.73
+},
+{
+"arm": "A4",
+"step": 47,
+"exact": 54.78
+},
+{
+"arm": "A4",
+"step": 48,
+"exact": 54.82
+},
+{
+"arm": "A4",
+"step": 49,
+"exact": 54.87
+},
+{
+"arm": "A4",
+"step": 50,
+"exact": 54.92
+},
+{
+"arm": "A4",
+"step": 51,
+"exact": 54.96
+},
+{
+"arm": "A4",
+"step": 52,
+"exact": 54.98
+},
+{
+"arm": "A4",
+"step": 53,
+"exact": 55.03
+},
+{
+"arm": "A4",
+"step": 54,
+"exact": 55.08
+},
+{
+"arm": "A4",
+"step": 55,
+"exact": 55.09
+},
+{
+"arm": "A4",
+"step": 56,
+"exact": 55.12
+},
+{
+"arm": "A4",
+"step": 57,
+"exact": 55.16
+},
+{
+"arm": "A4",
+"step": 58,
+"exact": 55.2
+},
+{
+"arm": "A4",
+"step": 59,
+"exact": 55.24
+},
+{
+"arm": "A4",
+"step": 60,
+"exact": 55.31
+},
+{
+"arm": "A4",
+"step": 61,
+"exact": 55.34
+},
+{
+"arm": "A4",
+"step": 62,
+"exact": 55.36
+},
+{
+"arm": "A4",
+"step": 63,
+"exact": 55.41
+},
+{
+"arm": "A4",
+"step": 64,
+"exact": 55.46
+},
+{
+"arm": "A3",
+"step": 1,
+"exact": 2.52
+},
+{
+"arm": "A3",
+"step": 2,
+"exact": 19.95
+},
+{
+"arm": "A3",
+"step": 3,
+"exact": 33.1
+},
+{
+"arm": "A3",
+"step": 4,
+"exact": 42.18
+},
+{
+"arm": "A3",
+"step": 5,
+"exact": 47.96
+},
+{
+"arm": "A3",
+"step": 6,
+"exact": 51.71
+},
+{
+"arm": "A3",
+"step": 7,
+"exact": 54.5
+},
+{
+"arm": "A3",
+"step": 8,
+"exact": 56.76
+},
+{
+"arm": "A3",
+"step": 9,
+"exact": 58.48
+},
+{
+"arm": "A3",
+"step": 10,
+"exact": 59.82
+},
+{
+"arm": "A3",
+"step": 11,
+"exact": 60.92
+},
+{
+"arm": "A3",
+"step": 12,
+"exact": 61.9
+},
+{
+"arm": "A3",
+"step": 13,
+"exact": 62.81
+},
+{
+"arm": "A3",
+"step": 14,
+"exact": 63.59
+},
+{
+"arm": "A3",
+"step": 15,
+"exact": 64.18
+},
+{
+"arm": "A3",
+"step": 16,
+"exact": 64.72
+},
+{
+"arm": "A3",
+"step": 17,
+"exact": 65.32
+},
+{
+"arm": "A3",
+"step": 18,
+"exact": 65.79
+},
+{
+"arm": "A3",
+"step": 19,
+"exact": 66.27
+},
+{
+"arm": "A3",
+"step": 20,
+"exact": 66.67
+},
+{
+"arm": "A3",
+"step": 21,
+"exact": 66.98
+},
+{
+"arm": "A3",
+"step": 22,
+"exact": 67.31
+},
+{
+"arm": "A3",
+"step": 23,
+"exact": 67.56
+},
+{
+"arm": "A3",
+"step": 24,
+"exact": 67.87
+},
+{
+"arm": "A3",
+"step": 25,
+"exact": 68.16
+},
+{
+"arm": "A3",
+"step": 26,
+"exact": 68.48
+},
+{
+"arm": "A3",
+"step": 27,
+"exact": 68.7
+},
+{
+"arm": "A3",
+"step": 28,
+"exact": 68.9
+},
+{
+"arm": "A3",
+"step": 29,
+"exact": 69.1
+},
+{
+"arm": "A3",
+"step": 30,
+"exact": 69.25
+},
+{
+"arm": "A3",
+"step": 31,
+"exact": 69.39
+},
+{
+"arm": "A3",
+"step": 32,
+"exact": 69.6
+},
+{
+"arm": "A3",
+"step": 33,
+"exact": 69.77
+},
+{
+"arm": "A3",
+"step": 34,
+"exact": 69.91
+},
+{
+"arm": "A3",
+"step": 35,
+"exact": 70.04
+},
+{
+"arm": "A3",
+"step": 36,
+"exact": 70.19
+},
+{
+"arm": "A3",
+"step": 37,
+"exact": 70.3
+},
+{
+"arm": "A3",
+"step": 38,
+"exact": 70.43
+},
+{
+"arm": "A3",
+"step": 39,
+"exact": 70.54
+},
+{
+"arm": "A3",
+"step": 40,
+"exact": 70.64
+},
+{
+"arm": "A3",
+"step": 41,
+"exact": 70.77
+},
+{
+"arm": "A3",
+"step": 42,
+"exact": 70.89
+},
+{
+"arm": "A3",
+"step": 43,
+"exact": 70.98
+},
+{
+"arm": "A3",
+"step": 44,
+"exact": 71.08
+},
+{
+"arm": "A3",
+"step": 45,
+"exact": 71.19
+},
+{
+"arm": "A3",
+"step": 46,
+"exact": 71.28
+},
+{
+"arm": "A3",
+"step": 47,
+"exact": 71.38
+},
+{
+"arm": "A3",
+"step": 48,
+"exact": 71.48
+},
+{
+"arm": "A3",
+"step": 49,
+"exact": 71.54
+},
+{
+"arm": "A3",
+"step": 50,
+"exact": 71.64
+},
+{
+"arm": "A3",
+"step": 51,
+"exact": 71.72
+},
+{
+"arm": "A3",
+"step": 52,
+"exact": 71.81
+},
+{
+"arm": "A3",
+"step": 53,
+"exact": 71.86
+},
+{
+"arm": "A3",
+"step": 54,
+"exact": 71.94
+},
+{
+"arm": "A3",
+"step": 55,
+"exact": 71.99
+},
+{
+"arm": "A3",
+"step": 56,
+"exact": 72.04
+},
+{
+"arm": "A3",
+"step": 57,
+"exact": 72.13
+},
+{
+"arm": "A3",
+"step": 58,
+"exact": 72.21
+},
+{
+"arm": "A3",
+"step": 59,
+"exact": 72.27
+},
+{
+"arm": "A3",
+"step": 60,
+"exact": 72.33
+},
+{
+"arm": "A3",
+"step": 61,
+"exact": 72.4
+},
+{
+"arm": "A3",
+"step": 62,
+"exact": 72.46
+},
+{
+"arm": "A3",
+"step": 63,
+"exact": 72.54
+},
+{
+"arm": "A3",
+"step": 64,
+"exact": 72.6
+},
+{
+"arm": "A10",
+"step": 1,
+"exact": 2.3
+},
+{
+"arm": "A10",
+"step": 2,
+"exact": 20.23
+},
+{
+"arm": "A10",
+"step": 3,
+"exact": 33.2
+},
+{
+"arm": "A10",
+"step": 4,
+"exact": 39.68
+},
+{
+"arm": "A10",
+"step": 5,
+"exact": 43.48
+},
+{
+"arm": "A10",
+"step": 6,
+"exact": 45.82
+},
+{
+"arm": "A10",
+"step": 7,
+"exact": 47.22
+},
+{
+"arm": "A10",
+"step": 8,
+"exact": 48.12
+},
+{
+"arm": "A10",
+"step": 9,
+"exact": 48.75
+},
+{
+"arm": "A10",
+"step": 10,
+"exact": 49.29
+},
+{
+"arm": "A10",
+"step": 11,
+"exact": 49.6
+},
+{
+"arm": "A10",
+"step": 12,
+"exact": 49.79
+},
+{
+"arm": "A10",
+"step": 13,
+"exact": 50.04
+},
+{
+"arm": "A10",
+"step": 14,
+"exact": 50.28
+},
+{
+"arm": "A10",
+"step": 15,
+"exact": 50.39
+},
+{
+"arm": "A10",
+"step": 16,
+"exact": 50.52
+},
+{
+"arm": "A10",
+"step": 17,
+"exact": 50.68
+},
+{
+"arm": "A10",
+"step": 18,
+"exact": 50.8
+},
+{
+"arm": "A10",
+"step": 19,
+"exact": 50.94
+},
+{
+"arm": "A10",
+"step": 20,
+"exact": 51.01
+},
+{
+"arm": "A10",
+"step": 21,
+"exact": 51.08
+},
+{
+"arm": "A10",
+"step": 22,
+"exact": 51.19
+},
+{
+"arm": "A10",
+"step": 23,
+"exact": 51.26
+},
+{
+"arm": "A10",
+"step": 24,
+"exact": 51.34
+},
+{
+"arm": "A10",
+"step": 25,
+"exact": 51.38
+},
+{
+"arm": "A10",
+"step": 26,
+"exact": 51.45
+},
+{
+"arm": "A10",
+"step": 27,
+"exact": 51.51
+},
+{
+"arm": "A10",
+"step": 28,
+"exact": 51.56
+},
+{
+"arm": "A10",
+"step": 29,
+"exact": 51.59
+},
+{
+"arm": "A10",
+"step": 30,
+"exact": 51.62
+},
+{
+"arm": "A10",
+"step": 31,
+"exact": 51.65
+},
+{
+"arm": "A10",
+"step": 32,
+"exact": 51.68
+},
+{
+"arm": "A10",
+"step": 33,
+"exact": 51.72
+},
+{
+"arm": "A10",
+"step": 34,
+"exact": 51.74
+},
+{
+"arm": "A10",
+"step": 35,
+"exact": 51.77
+},
+{
+"arm": "A10",
+"step": 36,
+"exact": 51.81
+},
+{
+"arm": "A10",
+"step": 37,
+"exact": 51.84
+},
+{
+"arm": "A10",
+"step": 38,
+"exact": 51.86
+},
+{
+"arm": "A10",
+"step": 39,
+"exact": 51.89
+},
+{
+"arm": "A10",
+"step": 40,
+"exact": 51.9
+},
+{
+"arm": "A10",
+"step": 41,
+"exact": 51.93
+},
+{
+"arm": "A10",
+"step": 42,
+"exact": 51.97
+},
+{
+"arm": "A10",
+"step": 43,
+"exact": 51.99
+},
+{
+"arm": "A10",
+"step": 44,
+"exact": 52.0
+},
+{
+"arm": "A10",
+"step": 45,
+"exact": 52.02
+},
+{
+"arm": "A10",
+"step": 46,
+"exact": 52.03
+},
+{
+"arm": "A10",
+"step": 47,
+"exact": 52.05
+},
+{
+"arm": "A10",
+"step": 48,
+"exact": 52.06
+},
+{
+"arm": "A10",
+"step": 49,
+"exact": 52.08
+},
+{
+"arm": "A10",
+"step": 50,
+"exact": 52.09
+},
+{
+"arm": "A10",
+"step": 51,
+"exact": 52.11
+},
+{
+"arm": "A10",
+"step": 52,
+"exact": 52.13
+},
+{
+"arm": "A10",
+"step": 53,
+"exact": 52.14
+},
+{
+"arm": "A10",
+"step": 54,
+"exact": 52.14
+},
+{
+"arm": "A10",
+"step": 55,
+"exact": 52.16
+},
+{
+"arm": "A10",
+"step": 56,
+"exact": 52.18
+},
+{
+"arm": "A10",
+"step": 57,
+"exact": 52.2
+},
+{
+"arm": "A10",
+"step": 58,
+"exact": 52.21
+},
+{
+"arm": "A10",
+"step": 59,
+"exact": 52.21
+},
+{
+"arm": "A10",
+"step": 60,
+"exact": 52.22
+},
+{
+"arm": "A10",
+"step": 61,
+"exact": 52.23
+},
+{
+"arm": "A10",
+"step": 62,
+"exact": 52.24
+},
+{
+"arm": "A10",
+"step": 63,
+"exact": 52.24
+},
+{
+"arm": "A10",
+"step": 64,
+"exact": 52.26
+}
+]

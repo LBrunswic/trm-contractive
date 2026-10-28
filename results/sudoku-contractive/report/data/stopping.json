@@ -1,0 +1,618 @@
+[
+{
+"arm": "A0@T",
+"tau": 0.3,
+"steps_single": 6.04,
+"acc_single": 59.1,
+"steps_vote": 6.58,
+"acc_vote": 67.8
+},
+{
+"arm": "A0@T",
+"tau": 0.1,
+"steps_single": 25.03,
+"acc_single": 66.9,
+"steps_vote": 24.28,
+"acc_vote": 74.2
+},
+{
+"arm": "A0@T",
+"tau": 0.05,
+"steps_single": 26.04,
+"acc_single": 66.9,
+"steps_vote": 25.27,
+"acc_vote": 74.2
+},
+{
+"arm": "A0@T",
+"tau": 0.03,
+"steps_single": 26.21,
+"acc_single": 66.9,
+"steps_vote": 25.49,
+"acc_vote": 74.2
+},
+{
+"arm": "A0@T",
+"tau": 0.02,
+"steps_single": 26.36,
+"acc_single": 66.9,
+"steps_vote": 25.66,
+"acc_vote": 74.2
+},
+{
+"arm": "A0@T",
+"tau": 0.01,
+"steps_single": 26.67,
+"acc_single": 66.9,
+"steps_vote": 26.04,
+"acc_vote": 74.2
+},
+{
+"arm": "A0@T",
+"tau": 0.005,
+"steps_single": 28.83,
+"acc_single": 66.9,
+"steps_vote": 28.21,
+"acc_vote": 74.2
+},
+{
+"arm": "A0",
+"tau": 0.3,
+"steps_single": 6.61,
+"acc_single": 64.9,
+"steps_vote": 7.06,
+"acc_vote": 74.2
+},
+{
+"arm": "A0",
+"tau": 0.1,
+"steps_single": 21.45,
+"acc_single": 75.5,
+"steps_vote": 21.71,
+"acc_vote": 79.9
+},
+{
+"arm": "A0",
+"tau": 0.05,
+"steps_single": 21.85,
+"acc_single": 75.5,
+"steps_vote": 22.27,
+"acc_vote": 79.9
+},
+{
+"arm": "A0",
+"tau": 0.03,
+"steps_single": 22.12,
+"acc_single": 75.5,
+"steps_vote": 22.51,
+"acc_vote": 79.9
+},
+{
+"arm": "A0",
+"tau": 0.02,
+"steps_single": 22.31,
+"acc_single": 75.5,
+"steps_vote": 22.72,
+"acc_vote": 79.9
+},
+{
+"arm": "A0",
+"tau": 0.01,
+"steps_single": 22.73,
+"acc_single": 75.5,
+"steps_vote": 23.16,
+"acc_vote": 79.9
+},
+{
+"arm": "A0",
+"tau": 0.005,
+"steps_single": 24.42,
+"acc_single": 75.5,
+"steps_vote": 24.81,
+"acc_vote": 79.9
+},
+{
+"arm": "A1",
+"tau": 0.3,
+"steps_single": 2.99,
+"acc_single": 2.4,
+"steps_vote": 3.0,
+"acc_vote": 2.7
+},
+{
+"arm": "A1",
+"tau": 0.1,
+"steps_single": 3.0,
+"acc_single": 2.4,
+"steps_vote": 3.0,
+"acc_vote": 2.7
+},
+{
+"arm": "A1",
+"tau": 0.05,
+"steps_single": 3.0,
+"acc_single": 2.4,
+"steps_vote": 3.0,
+"acc_vote": 2.7
+},
+{
+"arm": "A1",
+"tau": 0.03,
+"steps_single": 3.0,
+"acc_single": 2.4,
+"steps_vote": 3.01,
+"acc_vote": 2.7
+},
+{
+"arm": "A1",
+"tau": 0.02,
+"steps_single": 3.01,
+"acc_single": 2.5,
+"steps_vote": 3.03,
+"acc_vote": 2.9
+},
+{
+"arm": "A1",
+"tau": 0.01,
+"steps_single": 3.34,
+"acc_single": 4.2,
+"steps_vote": 3.81,
+"acc_vote": 6.2
+},
+{
+"arm": "A1",
+"tau": 0.005,
+"steps_single": 5.74,
+"acc_single": 8.5,
+"steps_vote": 5.97,
+"acc_vote": 9.6
+},
+{
+"arm": "A6",
+"tau": 0.3,
+"steps_single": 3.0,
+"acc_single": 14.4,
+"steps_vote": 3.0,
+"acc_vote": 14.7
+},
+{
+"arm": "A6",
+"tau": 0.1,
+"steps_single": 3.26,
+"acc_single": 16.3,
+"steps_vote": 3.6,
+"acc_vote": 17.8
+},
+{
+"arm": "A6",
+"tau": 0.05,
+"steps_single": 4.78,
+"acc_single": 22.4,
+"steps_vote": 5.08,
+"acc_vote": 23.1
+},
+{
+"arm": "A6",
+"tau": 0.03,
+"steps_single": 7.15,
+"acc_single": 25.0,
+"steps_vote": 6.68,
+"acc_vote": 25.7
+},
+{
+"arm": "A6",
+"tau": 0.02,
+"steps_single": 9.37,
+"acc_single": 26.0,
+"steps_vote": 8.32,
+"acc_vote": 26.7
+},
+{
+"arm": "A6",
+"tau": 0.01,
+"steps_single": 13.01,
+"acc_single": 26.8,
+"steps_vote": 12.12,
+"acc_vote": 27.3
+},
+{
+"arm": "A6",
+"tau": 0.005,
+"steps_single": 19.75,
+"acc_single": 27.2,
+"steps_vote": 19.97,
+"acc_vote": 27.4
+},
+{
+"arm": "A7",
+"tau": 0.3,
+"steps_single": 3.25,
+"acc_single": 33.1,
+"steps_vote": 3.47,
+"acc_vote": 33.4
+},
+{
+"arm": "A7",
+"tau": 0.1,
+"steps_single": 13.15,
+"acc_single": 55.7,
+"steps_vote": 10.36,
+"acc_vote": 55.9
+},
+{
+"arm": "A7",
+"tau": 0.05,
+"steps_single": 28.86,
+"acc_single": 58.0,
+"steps_vote": 18.25,
+"acc_vote": 58.1
+},
+{
+"arm": "A7",
+"tau": 0.03,
+"steps_single": 30.73,
+"acc_single": 58.1,
+"steps_vote": 20.29,
+"acc_vote": 58.2
+},
+{
+"arm": "A7",
+"tau": 0.02,
+"steps_single": 31.32,
+"acc_single": 58.1,
+"steps_vote": 21.03,
+"acc_vote": 58.2
+},
+{
+"arm": "A7",
+"tau": 0.01,
+"steps_single": 32.26,
+"acc_single": 58.1,
+"steps_vote": 22.35,
+"acc_vote": 58.2
+},
+{
+"arm": "A7",
+"tau": 0.005,
+"steps_single": 64.0,
+"acc_single": 58.1,
+"steps_vote": 64.0,
+"acc_vote": 58.2
+},
+{
+"arm": "A9",
+"tau": 0.3,
+"steps_single": 4.57,
+"acc_single": 48.5,
+"steps_vote": 5.28,
+"acc_vote": 55.2
+},
+{
+"arm": "A9",
+"tau": 0.1,
+"steps_single": 9.74,
+"acc_single": 54.9,
+"steps_vote": 11.12,
+"acc_vote": 57.7
+},
+{
+"arm": "A9",
+"tau": 0.05,
+"steps_single": 12.47,
+"acc_single": 55.2,
+"steps_vote": 14.01,
+"acc_vote": 57.7
+},
+{
+"arm": "A9",
+"tau": 0.03,
+"steps_single": 15.1,
+"acc_single": 55.4,
+"steps_vote": 16.56,
+"acc_vote": 57.5
+},
+{
+"arm": "A9",
+"tau": 0.02,
+"steps_single": 20.04,
+"acc_single": 55.7,
+"steps_vote": 21.56,
+"acc_vote": 57.7
+},
+{
+"arm": "A9",
+"tau": 0.01,
+"steps_single": 32.24,
+"acc_single": 55.7,
+"steps_vote": 33.4,
+"acc_vote": 57.7
+},
+{
+"arm": "A9",
+"tau": 0.005,
+"steps_single": 64.0,
+"acc_single": 55.7,
+"steps_vote": 64.0,
+"acc_vote": 57.7
+},
+{
+"arm": "A8",
+"tau": 0.3,
+"steps_single": 4.02,
+"acc_single": 45.7,
+"steps_vote": 4.5,
+"acc_vote": 52.9
+},
+{
+"arm": "A8",
+"tau": 0.1,
+"steps_single": 9.35,
+"acc_single": 55.2,
+"steps_vote": 10.13,
+"acc_vote": 57.9
+},
+{
+"arm": "A8",
+"tau": 0.05,
+"steps_single": 10.99,
+"acc_single": 55.9,
+"steps_vote": 12.17,
+"acc_vote": 58.0
+},
+{
+"arm": "A8",
+"tau": 0.03,
+"steps_single": 12.06,
+"acc_single": 56.0,
+"steps_vote": 13.73,
+"acc_vote": 58.1
+},
+{
+"arm": "A8",
+"tau": 0.02,
+"steps_single": 12.9,
+"acc_single": 56.1,
+"steps_vote": 15.11,
+"acc_vote": 58.0
+},
+{
+"arm": "A8",
+"tau": 0.01,
+"steps_single": 15.94,
+"acc_single": 56.1,
+"steps_vote": 18.69,
+"acc_vote": 57.7
+},
+{
+"arm": "A8",
+"tau": 0.005,
+"steps_single": 64.0,
+"acc_single": 56.1,
+"steps_vote": 64.0,
+"acc_vote": 58.0
+},
+{
+"arm": "A2",
+"tau": 0.3,
+"steps_single": 5.48,
+"acc_single": 60.4,
+"steps_vote": 6.11,
+"acc_vote": 70.1
+},
+{
+"arm": "A2",
+"tau": 0.1,
+"steps_single": 22.3,
+"acc_single": 72.3,
+"steps_vote": 22.5,
+"acc_vote": 80.3
+},
+{
+"arm": "A2",
+"tau": 0.05,
+"steps_single": 24.7,
+"acc_single": 72.5,
+"steps_vote": 24.56,
+"acc_vote": 80.3
+},
+{
+"arm": "A2",
+"tau": 0.03,
+"steps_single": 26.23,
+"acc_single": 72.5,
+"steps_vote": 26.06,
+"acc_vote": 80.3
+},
+{
+"arm": "A2",
+"tau": 0.02,
+"steps_single": 28.07,
+"acc_single": 72.5,
+"steps_vote": 27.86,
+"acc_vote": 80.3
+},
+{
+"arm": "A2",
+"tau": 0.01,
+"steps_single": 39.04,
+"acc_single": 72.5,
+"steps_vote": 39.17,
+"acc_vote": 80.3
+},
+{
+"arm": "A2",
+"tau": 0.005,
+"steps_single": 64.0,
+"acc_single": 72.5,
+"steps_vote": 64.0,
+"acc_vote": 80.3
+},
+{
+"arm": "A4",
+"tau": 0.3,
+"steps_single": 2.0,
+"acc_single": 23.5,
+"steps_vote": 2.94,
+"acc_vote": 40.5
+},
+{
+"arm": "A4",
+"tau": 0.1,
+"steps_single": 3.19,
+"acc_single": 33.3,
+"steps_vote": 3.93,
+"acc_vote": 46.0
+},
+{
+"arm": "A4",
+"tau": 0.05,
+"steps_single": 6.07,
+"acc_single": 46.7,
+"steps_vote": 6.7,
+"acc_vote": 55.1
+},
+{
+"arm": "A4",
+"tau": 0.03,
+"steps_single": 11.82,
+"acc_single": 52.0,
+"steps_vote": 12.46,
+"acc_vote": 58.1
+},
+{
+"arm": "A4",
+"tau": 0.02,
+"steps_single": 17.73,
+"acc_single": 53.4,
+"steps_vote": 18.24,
+"acc_vote": 59.2
+},
+{
+"arm": "A4",
+"tau": 0.01,
+"steps_single": 25.53,
+"acc_single": 54.2,
+"steps_vote": 25.72,
+"acc_vote": 59.2
+},
+{
+"arm": "A4",
+"tau": 0.005,
+"steps_single": 29.49,
+"acc_single": 54.2,
+"steps_vote": 30.31,
+"acc_vote": 59.1
+},
+{
+"arm": "A3",
+"tau": 0.3,
+"steps_single": 3.07,
+"acc_single": 36.1,
+"steps_vote": 3.66,
+"acc_vote": 46.1
+},
+{
+"arm": "A3",
+"tau": 0.1,
+"steps_single": 15.48,
+"acc_single": 68.4,
+"steps_vote": 17.08,
+"acc_vote": 80.5
+},
+{
+"arm": "A3",
+"tau": 0.05,
+"steps_single": 22.34,
+"acc_single": 72.0,
+"steps_vote": 23.8,
+"acc_vote": 82.2
+},
+{
+"arm": "A3",
+"tau": 0.03,
+"steps_single": 24.76,
+"acc_single": 72.4,
+"steps_vote": 25.84,
+"acc_vote": 82.3
+},
+{
+"arm": "A3",
+"tau": 0.02,
+"steps_single": 26.13,
+"acc_single": 72.4,
+"steps_vote": 27.08,
+"acc_vote": 82.3
+},
+{
+"arm": "A3",
+"tau": 0.01,
+"steps_single": 28.6,
+"acc_single": 72.4,
+"steps_vote": 29.55,
+"acc_vote": 82.2
+},
+{
+"arm": "A3",
+"tau": 0.005,
+"steps_single": 61.92,
+"acc_single": 72.4,
+"steps_vote": 61.88,
+"acc_vote": 82.2
+},
+{
+"arm": "A10",
+"tau": 0.3,
+"steps_single": 3.86,
+"acc_single": 44.2,
+"steps_vote": 4.26,
+"acc_vote": 50.2
+},
+{
+"arm": "A10",
+"tau": 0.1,
+"steps_single": 8.89,
+"acc_single": 51.0,
+"steps_vote": 9.78,
+"acc_vote": 54.9
+},
+{
+"arm": "A10",
+"tau": 0.05,
+"steps_single": 12.18,
+"acc_single": 52.2,
+"steps_vote": 13.09,
+"acc_vote": 55.2
+},
+{
+"arm": "A10",
+"tau": 0.03,
+"steps_single": 14.32,
+"acc_single": 52.4,
+"steps_vote": 15.62,
+"acc_vote": 55.6
+},
+{
+"arm": "A10",
+"tau": 0.02,
+"steps_single": 16.45,
+"acc_single": 52.5,
+"steps_vote": 17.71,
+"acc_vote": 55.8
+},
+{
+"arm": "A10",
+"tau": 0.01,
+"steps_single": 21.44,
+"acc_single": 52.7,
+"steps_vote": 22.77,
+"acc_vote": 55.5
+},
+{
+"arm": "A10",
+"tau": 0.005,
+"steps_single": 64.0,
+"acc_single": 52.7,
+"steps_vote": 64.0,
+"acc_vote": 55.4
+}
+]
